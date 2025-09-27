@@ -2,12 +2,12 @@
 (* Distributed only by permission.                             *)
 module Bool;
 (* Defines
-	Bool = All(X)X->X->X
-	True, False <: Bool
-	true: True; false: False
-	not: Bool->Bool
-	and, or, _\/_, _/\_: Bool->Bool->Bool
-	if _ then _ else _ end
+        Bool = All(X)X->X->X
+        True, False <: Bool
+        true: True; false: False
+        not: Bool->Bool
+        and, or, _\/_, _/\_: Bool->Bool->Bool
+        if _ then _ else _ end
 *)
 
 Let Bool = All(X) X->X->X
@@ -39,10 +39,10 @@ let not: Bool->Bool =
       fun(x:Bool) if x then false else true end
     and: Bool->Bool->Bool =
       fun(x:Bool) fun(y:Bool)
-	if x then y else false end
+        if x then y else false end
     or:Bool->Bool->Bool =
       fun(x:Bool) fun(y:Bool)
-	if x then true else y end;
+        if x then true else y end;
 
 syntax
   termOper ::= ... *_1

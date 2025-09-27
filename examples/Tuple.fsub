@@ -3,7 +3,7 @@
 module Tuple
 import Product;
 (* Defines
-	types: Tuple(type ... type)
+        types: Tuple(type ... type)
 *)
 
 syntax

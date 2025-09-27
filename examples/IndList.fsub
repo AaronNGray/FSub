@@ -4,18 +4,18 @@
 module IndList
 import Bool;
 (* Defines:
-	List(A) = All(L) L->{A->L->L}->L,
-	nil: All(A?) List(A),
-	cons: All(A?) A->List(A)->List(A),
-	null: All(A?) List(A)->Bool,
-	hd: All(A?) List(A)->A->A,
-	tl: All(A?)List(A)->List(A),
+        List(A) = All(L) L->{A->L->L}->L,
+        nil: All(A?) List(A),
+        cons: All(A?) A->List(A)->List(A),
+        null: All(A?) List(A)->Bool,
+        hd: All(A?) List(A)->A->A,
+        tl: All(A?)List(A)->List(A),
 
-	caseList term
-	  nil() term
-	  cons(ide:type ide:type) term
-	end,
-	list(term ... term)
+        caseList term
+          nil() term
+          cons(ide:type ide:type) term
+        end,
+        list(term ... term)
 *)
 
 syntax
@@ -42,10 +42,10 @@ syntax
     { "nil" => nil
       "cons" => cons
       ["caseList" term_1
-	"nil" "(" ")" term_2
-	"cons" "(" termIde_3":"type_4 termIde_5":"type_6")" term_7
-	"end"]
-	=> iterList(_1)(_2)(fun(_3:_4)fun(_5:_6)_7)
+        "nil" "(" ")" term_2
+        "cons" "(" termIde_3":"type_4 termIde_5":"type_6")" term_7
+        "end"]
+        => iterList(_1)(_2)(fun(_3:_4)fun(_5:_6)_7)
     }
 ;
 
@@ -94,10 +94,10 @@ syntax
     { ["nil"] => nil
       ["cons"] => cons
       ["caseList" term_1 ":" "List" "(" type_2 ")" "giving" type_3
-	"nil" "(" ")" term_4
-	"cons" "(" termIde_5 termIde_6 ")" term_7
-	"end"]
-	=> _1(:_3)(_4)(fun(_5:_2)fun(_6:_3)_7)
+        "nil" "(" ")" term_4
+        "cons" "(" termIde_5 termIde_6 ")" term_7
+        "end"]
+        => _1(:_3)(_4)(fun(_5:_2)fun(_6:_3)_7)
     }
 ;
 

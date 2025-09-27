@@ -3,11 +3,11 @@
 
 module Product;
 (* Defines
-	: A*B = All(C){A->B->C}->C
-	_,_: All(A?) All(B?) A->B->A*B
-	pair: All(A?) All(B?) A->B->A*B
-	fst: All(A?) All(B?) A*B->A
-	snd: All(A?) All(B?) A*B->B
+        : A*B = All(C){A->B->C}->C
+        _,_: All(A?) All(B?) A->B->A*B
+        pair: All(A?) All(B?) A->B->A*B
+        fst: All(A?) All(B?) A*B->A
+        snd: All(A?) All(B?) A*B->B
 *)
 
 syntax

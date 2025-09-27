@@ -3,10 +3,10 @@
 
 module RecNat;
 (* Defines:
-	Nat,
-	zero,one,two: Nat,
-	succ,pred: Nat->Nat,
-	add,sub,_+_,_-_: Nat->Nat->Nat
+        Nat,
+        zero,one,two: Nat,
+        succ,pred: Nat->Nat,
+        add,sub,_+_,_-_: Nat->Nat->Nat
 *)
 
 Let Nat = Rec(N) All(C) C->{N->C}->C;

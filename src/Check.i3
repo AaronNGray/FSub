@@ -31,7 +31,7 @@ IMPORT Err, Formatter, Tree;
     Type = 
       BRANDED OBJECT
         location: Err.Location;
-	tag: Tree.IdeName:=NIL;
+        tag: Tree.IdeName:=NIL;
       END;
 
     TypeUniVar =
@@ -72,22 +72,22 @@ IMPORT Err, Formatter, Tree;
     TypeDefEnv <: TypeDefEnvBase;
     TypeDefEnvBase =
       Env BRANDED OBJECT
-	bound, type: Type;
+        bound, type: Type;
       END;
       (* Type defs are expanded by Scope; this structure is
-	used just for top-level printing. It does not
-	affect deBruijn numbers. *)
+        used just for top-level printing. It does not
+        affect deBruijn numbers. *)
 
     TypeEnv <: TypeEnvBase;
     TypeEnvBase =
       Env BRANDED OBJECT
-	bound: Type;
+        bound: Type;
       END;
 
     TermEnv <: TermEnvBase;
     TermEnvBase =
       Env BRANDED OBJECT
-	type: Type;
+        type: Type;
       END;
 
 VAR topEnv: Env;

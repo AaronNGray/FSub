@@ -9,7 +9,7 @@ IMPORT Formatter, Tree, Check;
 
   TYPE
     Env = BRANDED OBJECT 
-	name: Tree.IdeName;
+        name: Tree.IdeName;
         rest: Env;
       END;
 
@@ -17,23 +17,23 @@ IMPORT Formatter, Tree, Check;
       Env BRANDED OBJECT
       END;
       (* Type defs are expanded by Scope; this structure is
-	used just for top-level printing. It does not
-	affect deBruijn numbers. *)
+        used just for top-level printing. It does not
+        affect deBruijn numbers. *)
 
     TypeEnv =
       Env BRANDED OBJECT
-	type: Set;
+        type: Set;
       END;
 
     TermEnv =
       Env BRANDED OBJECT
-	val: Val;
+        val: Val;
       END;
 
     Set =
       BRANDED OBJECT
-	type: Tree.Type;
-	env: Env;
+        type: Tree.Type;
+        env: Env;
       END;
 
     Val = 
@@ -48,19 +48,19 @@ IMPORT Formatter, Tree, Check;
     ValFun = 
       Val BRANDED OBJECT 
         fun: Tree.TermFun;
-	env: Env;
+        env: Env;
       END;
 
     ValFun2 = 
       Val BRANDED OBJECT 
         fun: Tree.TermFun2;
-	env: Env;
+        env: Env;
       END;
 
     ValSusp = 
       Val BRANDED OBJECT 
         term: Tree.Term;
-	env: Env;
+        env: Env;
       END;
 
   VAR topEnv: Env;

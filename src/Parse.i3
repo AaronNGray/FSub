@@ -26,7 +26,7 @@ TYPE
       Extend(name: TEXT; grammar: Grammar) RAISES ANY;
       UndoExtend(name: TEXT; grammar: Grammar) RAISES ANY;
       ExtendIter(name: TEXT; iterPosPresent: BOOLEAN; iterPos: INTEGER;
-	grammar: Grammar) RAISES ANY;
+        grammar: Grammar) RAISES ANY;
       UndoExtendIter(name: TEXT; grammar: Grammar) RAISES ANY;
     END;
 
@@ -47,7 +47,7 @@ TYPE
     Grammar BRANDED OBJECT
       item: Grammar;
       position: INTEGER;
-	(* returns a NIL Tree *)
+        (* returns a NIL Tree *)
     END;
 
   Action <: ActionBase;
@@ -56,7 +56,7 @@ TYPE
       grammar: Grammar;
     METHODS
       Build(base: INTEGER; READONLY info: Err.LocationInfo): Tree RAISES ANY
-	:= BuildNoAction;
+        := BuildNoAction;
     END;
 
   EnvCapture =
@@ -73,7 +73,7 @@ TYPE
       key: Scanner.Keyword;
     METHODS
       Build(READONLY info: Err.LocationInfo): Tree RAISES ANY
-	:= BuildNoGivenKeyword;
+        := BuildNoGivenKeyword;
     END;
 
   GivenIdentifier =
@@ -81,7 +81,7 @@ TYPE
       ide: TEXT;
     METHODS
       Build(READONLY info: Err.LocationInfo): Tree RAISES ANY
-	:= BuildNoGivenIdentifier;
+        := BuildNoGivenIdentifier;
     END;
 
   GivenName =
@@ -89,7 +89,7 @@ TYPE
       text: TEXT;
     METHODS
       Build(READONLY info: Err.LocationInfo): Tree RAISES ANY
-	:= BuildNoGivenName;
+        := BuildNoGivenName;
     END;
 
   GivenDelimiter =
@@ -97,61 +97,61 @@ TYPE
       delim: CHAR;
     METHODS
       Build(READONLY info: Err.LocationInfo): Tree RAISES ANY
-	:= BuildNoGivenDelimiter;
+        := BuildNoGivenDelimiter;
     END;
 
   Identifier =
     Grammar BRANDED OBJECT
     METHODS
       Build(name: TEXT; READONLY info: Err.LocationInfo): Tree RAISES ANY
-	:= BuildNoIdentifier;
+        := BuildNoIdentifier;
     END;
 
   Name =
     Grammar BRANDED OBJECT
     METHODS
       Build(name: TEXT; READONLY info: Err.LocationInfo): Tree RAISES ANY
-	:= BuildNoName;
+        := BuildNoName;
     END;
 
   QuotedChar =
     Grammar BRANDED OBJECT
     METHODS
       Build(char: CHAR; READONLY info: Err.LocationInfo): Tree RAISES ANY
-	:= BuildNoQuotedChar;
+        := BuildNoQuotedChar;
     END;
 
   Integer =
     Grammar BRANDED OBJECT
     METHODS
       Build(int: INTEGER; READONLY info: Err.LocationInfo): Tree RAISES ANY
-	:= BuildNoInteger;
+        := BuildNoInteger;
     END;
 
   Real =
     Grammar BRANDED OBJECT
     METHODS
       Build(real: REAL; READONLY info: Err.LocationInfo): Tree RAISES ANY
-	:= BuildNoReal;
+        := BuildNoReal;
    END;
 
   QuotedString =
     Grammar BRANDED OBJECT
     METHODS
       Build(string: String.T; READONLY info: Err.LocationInfo): Tree RAISES ANY
-	:= BuildNoQuotedString;
+        := BuildNoQuotedString;
     END;
 
   Sequence =
     Grammar BRANDED OBJECT
       items: GrammarList
-	(* returns a NIL Tree *)
+        (* returns a NIL Tree *)
     END;
 
   Choice =
     Grammar BRANDED OBJECT
       choice: GrammarList;
-	(* returns what the succesful choice returns *)
+        (* returns what the succesful choice returns *)
     END;
 
   Iter =
@@ -159,22 +159,22 @@ TYPE
       accum: BOOLEAN;
       accumPosition: INTEGER;
       base, iter: Grammar;
-	(* returns what the accumlated iterations returns *)
+        (* returns what the accumlated iterations returns *)
     END;
     (* Iter(a,b) produces the left-associative parse trees:    
-	a, ab, (ab)b, ((ab)b)b, ...
+        a, ab, (ab)b, ((ab)b)b, ...
        which are not otherwise expressible.
        Ex:
-	Iter(ide,"'")
-		ide, ide', (ide')', ...
-	Iter(ide,["("ide")"])
-		ide, ide(ide), (ide(ide))(ide), ...
-	Iter(ide,["-"ide])
-		ide, ide"-"ide, (ide-ide)-ide, ...
-	Iter([], "$")
-		$, ($$), (($$)$), ...
-	Iter(ide, [";" ide])
-		ide, ide;ide, (ide;ide);ide, ...
+        Iter(ide,"'")
+                ide, ide', (ide')', ...
+        Iter(ide,["("ide")"])
+                ide, ide(ide), (ide(ide))(ide), ...
+        Iter(ide,["-"ide])
+                ide, ide"-"ide, (ide-ide)-ide, ...
+        Iter([], "$")
+                $, ($$), (($$)$), ...
+        Iter(ide, [";" ide])
+                ide, ide;ide, (ide;ide);ide, ...
     *)
 
 VAR Stack: ARRAY[0..1023] OF Tree;

@@ -3,8 +3,8 @@
 
 module Unit;
 (* Defines
-	Unit
-	unit: Unit
+        Unit
+        unit: Unit
 *)
 
 Let Unit = All(X) X->X;

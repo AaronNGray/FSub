@@ -37,13 +37,13 @@ PROCEDURE ScopeError(msg: TEXT; location: Err.Location) RAISES ANY =
     BEGIN
       Scanner.CurrentLocationInfo((*out*)info);
       Formatter.PutText(Out.out, msg); 
-	Formatter.NewLine(Out.out);
-	Formatter.PutText(Out.out, "  ");
-	Err.PrintLocation(Out.out, location, info.line);
-	Formatter.NewLine(Out.out);
+        Formatter.NewLine(Out.out);
+        Formatter.PutText(Out.out, "  ");
+        Err.PrintLocation(Out.out, location, info.line);
+        Formatter.NewLine(Out.out);
       Formatter.PutText(Out.out, "Error detected ");
         Err.PrintLocation(Out.out, Err.NewLineLocation(info), info.line);
-	Formatter.NewLine(Out.out);
+        Formatter.NewLine(Out.out);
       Err.Raise();
    END ScopeError;
 
@@ -55,16 +55,16 @@ PROCEDURE Length(env: Env): INTEGER =
     LOOP
       TYPECASE env OF <*NOWARN*>
       | NULL => 
-	 RETURN len;
+         RETURN len;
       | TypeDefEnv(node) =>
-	INC(len);
-	env := node.rest;
+        INC(len);
+        env := node.rest;
       | TypeEnv(node) =>
-	INC(len);
-	env := node.rest;
+        INC(len);
+        env := node.rest;
       | TermEnv(node) =>
-	INC(len);
-	env := node.rest;
+        INC(len);
+        env := node.rest;
       END;
     END
   END Length;
@@ -80,79 +80,79 @@ PROCEDURE SetAbsoluteIndex(name: Tree.IdeName; env: Env) RAISES ANY =
     LOOP
       TYPECASE env OF <*NOWARN*>
       | NULL => 
-	  ScopeError(
-	    "Free variable in action must be bound at the top level: " & 
-	    Tree.FmtIdeName(name, NIL), name.location);
+          ScopeError(
+            "Free variable in action must be bound at the top level: " & 
+            Tree.FmtIdeName(name, NIL), name.location);
       | TypeDefEnv(node) =>
-	IF Tree.SameIdeName(name, node.name) THEN
-	  name.absoluteEnvIndex := Length(env); EXIT;
-	ELSE
-	  env := node.rest;
-	END;
+        IF Tree.SameIdeName(name, node.name) THEN
+          name.absoluteEnvIndex := Length(env); EXIT;
+        ELSE
+          env := node.rest;
+        END;
       | TypeEnv(node) =>
-	IF Tree.SameIdeName(name, node.name) THEN
-	  name.absoluteEnvIndex := Length(env); EXIT;
-	ELSE
-	  env := node.rest;
-	END;
+        IF Tree.SameIdeName(name, node.name) THEN
+          name.absoluteEnvIndex := Length(env); EXIT;
+        ELSE
+          env := node.rest;
+        END;
       | TermEnv(node) =>
-	IF Tree.SameIdeName(name, node.name) THEN 
-	  name.absoluteEnvIndex := Length(env); EXIT;
-	ELSE
-	  env := node.rest;
-	END;
+        IF Tree.SameIdeName(name, node.name) THEN 
+          name.absoluteEnvIndex := Length(env); EXIT;
+        ELSE
+          env := node.rest;
+        END;
       END;
     END
   END SetAbsoluteIndex;
 
 PROCEDURE CheckAbsoluteIndex(name: Tree.IdeName; 
-	location: Err.Location; env: Env) RAISES ANY =
+        location: Err.Location; env: Env) RAISES ANY =
   BEGIN
     IF name.absoluteEnvIndex >= 0 THEN
       IF name.absoluteEnvIndex # Length(env) THEN
-	ScopeError(
-	  "Variable free in syntax action would be captured in expansion: " & name.text,
-	  location);
+        ScopeError(
+          "Variable free in syntax action would be captured in expansion: " & name.text,
+          location);
       END;
     END;
   END CheckAbsoluteIndex;
     
 PROCEDURE LookupTermIde((*mod*)name: Tree.IdeName; 
-	location: Err.Location; env: Env): INTEGER RAISES ANY =
+        location: Err.Location; env: Env): INTEGER RAISES ANY =
   VAR index: INTEGER;
   BEGIN
     index := 1;
     LOOP
       TYPECASE env OF <*NOWARN*>
       | NULL => 
-	  ScopeError(
-	    "Unbound term identifier: " & Tree.FmtIdeName(name, NIL),
-	    location);
+          ScopeError(
+            "Unbound term identifier: " & Tree.FmtIdeName(name, NIL),
+            location);
       | TypeDefEnv(node) =>
-	IF Tree.SameIdeName(name, node.name) THEN
-	  ScopeError(
-	    "Type identifier found in term position: " & name.text,
-	    location);
-	ELSE
-	  env := node.rest;
-	END;
+        IF Tree.SameIdeName(name, node.name) THEN
+          ScopeError(
+            "Type identifier found in term position: " & name.text,
+            location);
+        ELSE
+          env := node.rest;
+        END;
       | TypeEnv(node) =>
-	IF Tree.SameIdeName(name, node.name) THEN
-	  ScopeError(
-	    "Type identifier found in term position: " & name.text,
-	    location);
-	ELSE
-	  INC(index);
-	  env := node.rest;
-	END;
+        IF Tree.SameIdeName(name, node.name) THEN
+          ScopeError(
+            "Type identifier found in term position: " & name.text,
+            location);
+        ELSE
+          INC(index);
+          env := node.rest;
+        END;
       | TermEnv(node) =>
-	IF Tree.SameIdeName(name, node.name) THEN
-	  CheckAbsoluteIndex(name, location, env);
-	  RETURN index;
-	ELSE
-	  INC(index);
-	  env := node.rest;
-	END;
+        IF Tree.SameIdeName(name, node.name) THEN
+          CheckAbsoluteIndex(name, location, env);
+          RETURN index;
+        ELSE
+          INC(index);
+          env := node.rest;
+        END;
       END;
     END;
   END LookupTermIde;
@@ -165,34 +165,34 @@ PROCEDURE LookupTypeIde((*mod*)ide: Tree.TypeIde;
     LOOP
       TYPECASE env OF <*NOWARN*>
       | NULL => 
-	  ScopeError(
-	    "Unbound type identifier: " & Tree.FmtIdeName(ide.name, NIL),
-	    location);
+          ScopeError(
+            "Unbound type identifier: " & Tree.FmtIdeName(ide.name, NIL),
+            location);
       | TypeDefEnv(node) =>
-	  IF Tree.SameIdeName(ide.name, node.name) THEN 
-	    CheckAbsoluteIndex(ide.name, location, env);
-	    RETURN ScopeType(Tree.Copy(node.type), env);
-	  ELSE
-	    env := node.rest;
-	  END;
+          IF Tree.SameIdeName(ide.name, node.name) THEN 
+            CheckAbsoluteIndex(ide.name, location, env);
+            RETURN ScopeType(Tree.Copy(node.type), env);
+          ELSE
+            env := node.rest;
+          END;
       | TypeEnv(node) =>
-	  IF Tree.SameIdeName(ide.name, node.name) THEN 
-	    CheckAbsoluteIndex(ide.name, location, env);
-	    ide.index := index;
-	    RETURN ide;
-	  ELSE
-	    INC(index);
-	    env := node.rest;
-	  END;
+          IF Tree.SameIdeName(ide.name, node.name) THEN 
+            CheckAbsoluteIndex(ide.name, location, env);
+            ide.index := index;
+            RETURN ide;
+          ELSE
+            INC(index);
+            env := node.rest;
+          END;
       | TermEnv(node) =>
-	IF Tree.SameIdeName(ide.name, node.name) THEN
-	  ScopeError(
-	    "Term identifier found in type position: " & ide.name.text,
-	    location);
-	ELSE
-	  INC(index);
-	  env := node.rest;
-	END;
+        IF Tree.SameIdeName(ide.name, node.name) THEN
+          ScopeError(
+            "Term identifier found in type position: " & ide.name.text,
+            location);
+        ELSE
+          INC(index);
+          env := node.rest;
+        END;
       END;
     END;
   END LookupTypeIde;
@@ -204,16 +204,16 @@ PROCEDURE ScopeTypeBinding(binding: Tree.TypeBinding; env: Env)
     TYPECASE binding OF
     | NULL => RETURN env;
     | Tree.TypeBinding(node) =>
-	type := node.type;
-	node.bound := ScopeType(node.bound, env);
-	node.type := ScopeType(node.type, env);
-	node.type.tag := node.binder;
-	TYPECASE node.type OF
-	| Tree.TypeRec(nodeRec) => nodeRec.body.tag := node.binder;
-	ELSE
-	END;
-	RETURN ScopeTypeBinding(node.rest,
-	  NEW(TypeDefEnv, name:=node.binder, type:=type, rest:=env));
+        type := node.type;
+        node.bound := ScopeType(node.bound, env);
+        node.type := ScopeType(node.type, env);
+        node.type.tag := node.binder;
+        TYPECASE node.type OF
+        | Tree.TypeRec(nodeRec) => nodeRec.body.tag := node.binder;
+        ELSE
+        END;
+        RETURN ScopeTypeBinding(node.rest,
+          NEW(TypeDefEnv, name:=node.binder, type:=type, rest:=env));
     END;
   END ScopeTypeBinding;
 
@@ -223,12 +223,12 @@ PROCEDURE ScopeTermBinding(binding: Tree.TermBinding; env: Env)
     TYPECASE binding OF
     | NULL => RETURN env;
     | Tree.TermBinding(node) =>
-	IF node.bound#NIL THEN
-	  node.bound := ScopeType(node.bound, env);
-	END;
-	ScopeTerm(node.term, env);
-	RETURN ScopeTermBinding(node.rest,
-	  NEW(TermEnv, name:=node.binder, rest:=env));
+        IF node.bound#NIL THEN
+          node.bound := ScopeType(node.bound, env);
+        END;
+        ScopeTerm(node.term, env);
+        RETURN ScopeTermBinding(node.rest,
+          NEW(TermEnv, name:=node.binder, rest:=env));
     END;
   END ScopeTermBinding;
 
@@ -237,26 +237,26 @@ PROCEDURE ScopeType(type: Tree.Type; env: Env): Tree.Type RAISES ANY =
     TYPECASE type OF
     | NULL => Err.Fault(Out.out, "ScopeType NIL");
     | Tree.TypeIde(node) =>
-	RETURN LookupTypeIde((*mod*)node, type.location, env);
+        RETURN LookupTypeIde((*mod*)node, type.location, env);
     | Tree.TypeTop(node) =>
-	RETURN node;
+        RETURN node;
     | Tree.TypeArrow(node) =>
-	node.dom := ScopeType(node.dom, env);
-	node.rng := ScopeType(node.rng,
-	  NEW(TermEnv, name:=Tree.noName, rest:=env));
-	RETURN node;
+        node.dom := ScopeType(node.dom, env);
+        node.rng := ScopeType(node.rng,
+          NEW(TermEnv, name:=Tree.noName, rest:=env));
+        RETURN node;
     | Tree.TypeForall(node) =>
-	node.bound := ScopeType(node.bound, env);
-	node.body := ScopeType(node.body,
-	  NEW(TypeEnv, name:=node.binder, rest:=env));
-	RETURN node;
+        node.bound := ScopeType(node.bound, env);
+        node.body := ScopeType(node.body,
+          NEW(TypeEnv, name:=node.binder, rest:=env));
+        RETURN node;
     | Tree.TypeRec(node) =>
-	node.body := ScopeType(node.body,
-	  NEW(TypeEnv, name:=node.binder, rest:=env));
-	RETURN node;
+        node.body := ScopeType(node.body,
+          NEW(TypeEnv, name:=node.binder, rest:=env));
+        RETURN node;
     | Tree.TypePatternPosition, Tree.TypePatternForall =>
-	ScopeError("Pattern positions (_n) not allowed here",
-	  type.location);
+        ScopeError("Pattern positions (_n) not allowed here",
+          type.location);
     ELSE
       <*NOWARN*> Err.Fault(Out.out, "ScopeType");
     END;
@@ -267,34 +267,34 @@ PROCEDURE ScopeTerm(term: Tree.Term; env: Env) RAISES ANY =
     TYPECASE term OF
     | NULL => Err.Fault(Out.out, "ScopeTerm NIL");
     | Tree.TermIde(node) =>
-	node.index := LookupTermIde((*mod*)node.name, term.location, env);
+        node.index := LookupTermIde((*mod*)node.name, term.location, env);
     | Tree.TermTop =>
     | Tree.TermFun(node) =>
-	node.bound := ScopeType(node.bound, env);
-	ScopeTerm(node.body,
-	  NEW(TermEnv, name:=node.binder, rest:=env));
+        node.bound := ScopeType(node.bound, env);
+        ScopeTerm(node.body,
+          NEW(TermEnv, name:=node.binder, rest:=env));
     | Tree.TermAppl(node) =>
-	ScopeTerm(node.fun, env);
-	ScopeTerm(node.arg, env);
+        ScopeTerm(node.fun, env);
+        ScopeTerm(node.arg, env);
     | Tree.TermFun2(node) =>
-	node.bound := ScopeType(node.bound, env);
-	ScopeTerm(node.body,
-	  NEW(TypeEnv, name:=node.binder, rest:=env));
+        node.bound := ScopeType(node.bound, env);
+        ScopeTerm(node.body,
+          NEW(TypeEnv, name:=node.binder, rest:=env));
     | Tree.TermAppl2(node) =>
-	ScopeTerm(node.fun, env);
-	node.arg := ScopeType(node.arg, env);
+        ScopeTerm(node.fun, env);
+        node.arg := ScopeType(node.arg, env);
     | Tree.TermFold(node) =>
-	node.recType := ScopeType(node.recType, env);
-	ScopeTerm(node.arg, env);
+        node.recType := ScopeType(node.recType, env);
+        ScopeTerm(node.arg, env);
     | Tree.TermUnfold(node) =>
-	ScopeTerm(node.arg, env);
+        ScopeTerm(node.arg, env);
     | Tree.TermRec(node) =>
-	node.bound := ScopeType(node.bound, env);
-	ScopeTerm(node.body,
-	  NEW(TermEnv, name:=node.binder, rest:=env));
+        node.bound := ScopeType(node.bound, env);
+        ScopeTerm(node.body,
+          NEW(TermEnv, name:=node.binder, rest:=env));
     | Tree.TermPatternPosition, Tree.TermPatternFun, Tree.TermPatternFun2 =>
-	ScopeError("Pattern positions (_n) not allowed here",
-	  term.location);
+        ScopeError("Pattern positions (_n) not allowed here",
+          term.location);
     ELSE Err.Fault(Out.out, "ScopeTerm");
     END;
   END ScopeTerm;
@@ -304,15 +304,15 @@ PROCEDURE ScopeTerm(term: Tree.Term; env: Env) RAISES ANY =
       TYPECASE context OF <*NOWARN*>
       | NULL => RETURN env;
       | Tree.ContextType(node) =>
-	  node.bound:=
-	    ScopeType(node.bound, env);
-	  RETURN ScopeContext(node.rest,
-	    NEW(TypeEnv, name:=node.binder, rest:=env));
+          node.bound:=
+            ScopeType(node.bound, env);
+          RETURN ScopeContext(node.rest,
+            NEW(TypeEnv, name:=node.binder, rest:=env));
       | Tree.ContextTerm(node) =>
-	  node.type:=
-	    ScopeType(node.type, env);
-	  RETURN ScopeContext(node.rest,
-	    NEW(TermEnv, name:=node.binder, rest:=env));
+          node.type:=
+            ScopeType(node.type, env);
+          RETURN ScopeContext(node.rest,
+            NEW(TermEnv, name:=node.binder, rest:=env));
       END;
     END ScopeContext;
 

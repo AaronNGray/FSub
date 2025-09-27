@@ -118,14 +118,14 @@ PROCEDURE IsIdentifier(string: String.T): BOOLEAN RAISES ANY =
     IF length=0 THEN RETURN FALSE END;
     IF charTable[string[0]]=CharacterClass.LetterCharCase THEN
       FOR i:=0 TO length-1 DO 
-	class := charTable[string[i]];     
+        class := charTable[string[i]];     
         IF (class # CharacterClass.LetterCharCase) AND 
-	    (class # CharacterClass.DigitCharCase) THEN RETURN FALSE END;
+            (class # CharacterClass.DigitCharCase) THEN RETURN FALSE END;
       END;
       RETURN TRUE;
     ELSIF charTable[string[0]]=CharacterClass.SpecialCharCase THEN
       FOR i:=0 TO length-1 DO 
-	class := charTable[string[i]];     
+        class := charTable[string[i]];     
         IF (class # CharacterClass.SpecialCharCase) THEN RETURN FALSE END;
       END;
       RETURN TRUE;
@@ -237,13 +237,13 @@ PROCEDURE LookChar(): CHAR RAISES ANY =
       IF Rd.CharsReady(input^.rd) = 0 THEN
         IF isFirstPrompt THEN
           Wr.PutText(Stdio.stdout, firstPrompt);
-	  Wr.Flush(Stdio.stdout);
+          Wr.Flush(Stdio.stdout);
           INC(input^.acceptedCharPos, Text.Length(firstPrompt));
           INC(input^.acceptedLineCharPos, Text.Length(firstPrompt));
           isFirstPrompt := FALSE;
         ELSE
           Wr.PutText(Stdio.stdout, nextPrompt);
-	  Wr.Flush(Stdio.stdout);
+          Wr.Flush(Stdio.stdout);
           INC(input^.acceptedCharPos, Text.Length(nextPrompt));
           INC(input^.acceptedLineCharPos, Text.Length(nextPrompt));
         END;
@@ -265,8 +265,8 @@ PROCEDURE GetChar(): CHAR RAISES ANY =
       INC(input^.acceptedCharPos);
       INC(input^.acceptedLineCharPos);
       IF lookAheadChar='\n' THEN
-	INC(input^.acceptedLinePos);
-	input^.acceptedLineCharPos := 0;
+        INC(input^.acceptedLinePos);
+        input^.acceptedLineCharPos := 0;
       END;
       RETURN lookAheadChar;
     ELSE
@@ -274,13 +274,13 @@ PROCEDURE GetChar(): CHAR RAISES ANY =
         IF Rd.CharsReady(input^.rd) = 0 THEN
           IF isFirstPrompt THEN
             Wr.PutText(Stdio.stdout, firstPrompt);
-	    Wr.Flush(Stdio.stdout);
+            Wr.Flush(Stdio.stdout);
             INC(input^.acceptedCharPos, Text.Length(firstPrompt));
             INC(input^.acceptedLineCharPos, Text.Length(firstPrompt));
             isFirstPrompt := FALSE;
           ELSE
             Wr.PutText(Stdio.stdout, nextPrompt);
- 	    Wr.Flush(Stdio.stdout);
+             Wr.Flush(Stdio.stdout);
             INC(input^.acceptedCharPos, Text.Length(nextPrompt));
             INC(input^.acceptedLineCharPos, Text.Length(nextPrompt));
           END;
@@ -293,8 +293,8 @@ PROCEDURE GetChar(): CHAR RAISES ANY =
       INC(input^.acceptedCharPos);
       INC(input^.acceptedLineCharPos);
       IF lookAheadChar='\n' THEN
-	INC(input^.acceptedLinePos);
-	input^.acceptedLineCharPos := 0;
+        INC(input^.acceptedLinePos);
+        input^.acceptedLineCharPos := 0;
       END;
       RETURN char;
     END;
@@ -595,9 +595,9 @@ PROCEDURE GetTokenNat(VAR (*out*) nat: CARDINAL): BOOLEAN RAISES ANY =
   BEGIN
     IF LookToken() = TokenClass.IntCase THEN
       IF tokenInt >= 0 THEN
-	EVAL(GetToken());
+        EVAL(GetToken());
         nat := tokenInt; 
-	RETURN TRUE;
+        RETURN TRUE;
       ELSE
         RETURN FALSE;
       END;
@@ -643,12 +643,12 @@ PROCEDURE GetTokenIde(VAR (*ou*) ide: TEXT): BOOLEAN RAISES ANY =
     IF (class = TokenClass.IdeCase) OR (class = TokenClass.InfixCase) THEN
       IF scanBufferSize # 0 THEN
         name := Text.FromChars(SUBARRAY(scanBuffer^, 0, scanBufferSize));
-	IF keySet.table.get(name, (*OUT*) value) THEN
-	  tokenSym := NARROW(value, Symbol);
-	ELSE
-	  tokenSym := NEW(Symbol, name:=name, keyword:=FALSE);
-	  EVAL keySet.table.put(name, tokenSym);
-	END;
+        IF keySet.table.get(name, (*OUT*) value) THEN
+          tokenSym := NARROW(value, Symbol);
+        ELSE
+          tokenSym := NEW(Symbol, name:=name, keyword:=FALSE);
+          EVAL keySet.table.put(name, tokenSym);
+        END;
         scanBufferSize := 0;
       END;
       IF tokenSym.keyword THEN RETURN FALSE END;
@@ -666,12 +666,12 @@ PROCEDURE GetTokenName(VAR (*ou*) text: TEXT): BOOLEAN RAISES ANY =
     IF (class = TokenClass.IdeCase) OR (class = TokenClass.InfixCase) THEN
       IF scanBufferSize # 0 THEN
         name := Text.FromChars(SUBARRAY(scanBuffer^, 0, scanBufferSize));
-	IF keySet.table.get(name, (*OUT*) value) THEN
-	  tokenSym := NARROW(value, Symbol);
-	ELSE
-	  tokenSym := NEW(Symbol, name:=name, keyword:=FALSE);
-	  EVAL keySet.table.put(name, tokenSym);
-	END;
+        IF keySet.table.get(name, (*OUT*) value) THEN
+          tokenSym := NARROW(value, Symbol);
+        ELSE
+          tokenSym := NEW(Symbol, name:=name, keyword:=FALSE);
+          EVAL keySet.table.put(name, tokenSym);
+        END;
         scanBufferSize := 0;
       END;
       EVAL(GetToken());
@@ -688,12 +688,12 @@ PROCEDURE HaveTokenIde(ide: TEXT): BOOLEAN RAISES ANY =
     IF (class = TokenClass.IdeCase) OR (class = TokenClass.InfixCase) THEN
       IF scanBufferSize # 0 THEN
         name := Text.FromChars(SUBARRAY(scanBuffer^, 0, scanBufferSize));
-	IF keySet.table.get(name, (*OUT*) value) THEN
-	  tokenSym := NARROW(value, Symbol);
-	ELSE
-	  tokenSym := NEW(Symbol, name:=name, keyword:=FALSE);
-	  EVAL keySet.table.put(name, tokenSym);
-	END;
+        IF keySet.table.get(name, (*OUT*) value) THEN
+          tokenSym := NARROW(value, Symbol);
+        ELSE
+          tokenSym := NEW(Symbol, name:=name, keyword:=FALSE);
+          EVAL keySet.table.put(name, tokenSym);
+        END;
         scanBufferSize := 0;
       END;
       IF tokenSym.keyword THEN RETURN FALSE END;
@@ -711,12 +711,12 @@ PROCEDURE HaveTokenName(text: TEXT): BOOLEAN RAISES ANY =
     IF (class = TokenClass.IdeCase) OR (class = TokenClass.InfixCase) THEN
       IF scanBufferSize # 0 THEN
         name := Text.FromChars(SUBARRAY(scanBuffer^, 0, scanBufferSize));
-	IF keySet.table.get(name, (*OUT*) value) THEN
-	  tokenSym := NARROW(value, Symbol);
-	ELSE
-	  tokenSym := NEW(Symbol, name:=name, keyword:=FALSE);
-	  EVAL keySet.table.put(name, tokenSym);
-	END;
+        IF keySet.table.get(name, (*OUT*) value) THEN
+          tokenSym := NARROW(value, Symbol);
+        ELSE
+          tokenSym := NEW(Symbol, name:=name, keyword:=FALSE);
+          EVAL keySet.table.put(name, tokenSym);
+        END;
         scanBufferSize := 0;
       END;
       IF NOT Text.Equal(text, tokenSym.name) THEN RETURN FALSE END;
@@ -734,12 +734,12 @@ PROCEDURE HaveTokenKey(key: Keyword): BOOLEAN RAISES ANY =
     IF (class = TokenClass.IdeCase) OR (class = TokenClass.InfixCase) THEN
       IF scanBufferSize # 0 THEN
         name := Text.FromChars(SUBARRAY(scanBuffer^, 0, scanBufferSize));
-	IF keySet.table.get(name, (*OUT*) value) THEN
-	  tokenSym := NARROW(value, Symbol);
-	ELSE
-	  tokenSym := NEW(Symbol, name:=name, keyword:=FALSE);
-	  EVAL keySet.table.put(name, tokenSym);
-	END;
+        IF keySet.table.get(name, (*OUT*) value) THEN
+          tokenSym := NARROW(value, Symbol);
+        ELSE
+          tokenSym := NEW(Symbol, name:=name, keyword:=FALSE);
+          EVAL keySet.table.put(name, tokenSym);
+        END;
         scanBufferSize := 0;
       END;
       IF key#tokenSym THEN RETURN FALSE END;

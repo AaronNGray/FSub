@@ -189,10 +189,10 @@ PROCEDURE Compare(string1, string2: T): Comparison =
       IF i = size2 THEN RETURN Comparison.Gt END;
       IF string1^[i] # string2^[i] THEN
         IF string1^[i] < string2^[i] THEN 
-	  RETURN Comparison.Lt 
-	ELSE 
-	  RETURN Comparison.Gt 
-	END;
+          RETURN Comparison.Lt 
+        ELSE 
+          RETURN Comparison.Gt 
+        END;
       END;
       INC(i);
     END;
@@ -214,16 +214,16 @@ PROCEDURE CompareSub(
     i := 0;
     LOOP
       IF (start1+i >= size1) AND (start2+i >= size2) THEN 
-	RETURN Comparison.Eq;
+        RETURN Comparison.Eq;
       END;
       IF start1+i >= size1 THEN RETURN Comparison.Lt END;
       IF start2+i >= size2 THEN RETURN Comparison.Gt END;
       IF string1^[start1+i] # string2^[start2+i] THEN
         IF string1^[start1+i] < string2^[start2+i] THEN 
-	  RETURN Comparison.Lt 
-	ELSE 
-	  RETURN Comparison.Gt 
-	END;
+          RETURN Comparison.Lt 
+        ELSE 
+          RETURN Comparison.Gt 
+        END;
       END;
       INC(i);
     END;

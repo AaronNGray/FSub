@@ -36,9 +36,9 @@ PROCEDURE LoadFile(fileName: TEXT; complain: BOOLEAN:=TRUE) RAISES ANY =
       Scanner.PushInput(fileName, rd);
     EXCEPT 
     | OSError.E => 
-	IF complain THEN 
-	  Err.Fault(Out.out, "Could not open file: " & fileName) 
-	END;
+        IF complain THEN 
+          Err.Fault(Out.out, "Could not open file: " & fileName) 
+        END;
     END;
   END LoadFile;
 
@@ -84,18 +84,18 @@ PROCEDURE SaveGramInfo(gramInfo: Gram.GramInfo) =
   BEGIN
     topFrame.gramInfos:=
       NEW(GramInfos, first:=gramInfo, 
-	rest:=topFrame.gramInfos);
+        rest:=topFrame.gramInfos);
   END SaveGramInfo;
 
 PROCEDURE SaveFrame(name: TEXT) =
   BEGIN
     topFrame :=
-	NEW(Env, name:=name, 
-		topPhraseGram:=topPhraseGram, topPhraseEnv:=topPhraseEnv,
-		gramInfos:=NIL,
-		scopeEnv:=Scope.topEnv,
-		checkEnv:=Check.topEnv, valueEnv:=Value.topEnv,
-		rest:=topFrame);  
+        NEW(Env, name:=name, 
+                topPhraseGram:=topPhraseGram, topPhraseEnv:=topPhraseEnv,
+                gramInfos:=NIL,
+                scopeEnv:=Scope.topEnv,
+                checkEnv:=Check.topEnv, valueEnv:=Value.topEnv,
+                rest:=topFrame);  
   END SaveFrame;
 
 PROCEDURE RestoreFrame(name: TEXT) RAISES ANY =
@@ -108,16 +108,16 @@ PROCEDURE RestoreFrame(name: TEXT) RAISES ANY =
       LOOP
         gramInfos := topFrame.gramInfos;
         WHILE gramInfos#NIL DO 
-	  Gram.UndoSyntaxDecl(gramInfos.first);
-	  gramInfos := gramInfos.rest;
+          Gram.UndoSyntaxDecl(gramInfos.first);
+          gramInfos := gramInfos.rest;
         END;
         topPhraseGram := topFrame.topPhraseGram;
-	topPhraseEnv := topFrame.topPhraseEnv;
+        topPhraseEnv := topFrame.topPhraseEnv;
         Scope.topEnv := topFrame.scopeEnv;
         Check.topEnv := topFrame.checkEnv;
         Value.topEnv:= topFrame.valueEnv;
-	IF topFrame=scan THEN EXIT END;
-	topFrame:=topFrame.rest;
+        IF topFrame=scan THEN EXIT END;
+        topFrame:=topFrame.rest;
       END;
     END;
   END RestoreFrame;
@@ -151,7 +151,7 @@ PROCEDURE FindFrame(name: TEXT): Env =
       name := NARROW(Parse.Stack[base+1], Name).name;
       IF Parse.Stack[base+2]=NIL THEN arg:="?";
       ELSE
-	arg:=NARROW(Parse.Stack[base+2], Name).name;
+        arg:=NARROW(Parse.Stack[base+2], Name).name;
       END;
     END;
     RETURN 
@@ -190,7 +190,7 @@ PROCEDURE FindFrame(name: TEXT): Env =
     RETURN 
       NEW(Module, location:=Err.NewLineLocation(info),
         name:=NARROW(Parse.Stack[base+1], Name).name,
-	imports:=Parse.Stack[base+2]);
+        imports:=Parse.Stack[base+2]);
   END BuildModuleFrame;
 
   PROCEDURE BuildImportList(<*UNUSED*> self: Parse.Action; base: INTEGER;
@@ -199,7 +199,7 @@ PROCEDURE FindFrame(name: TEXT): Env =
     RETURN 
       NEW(NameList, location:=Err.NewLineLocation(info),
         first:=NARROW(Parse.Stack[base+1], Name).name,
-	rest:=Parse.Stack[base+2]);
+        rest:=Parse.Stack[base+2]);
   END BuildImportList;
 
   PROCEDURE BuildEstablishFrame(<*UNUSED*> self: Parse.Name; text: TEXT;
@@ -278,93 +278,93 @@ PROCEDURE Setup() RAISES ANY =
 
     topEnv.Add(topFrames.name,
       NEW(Parse.Choice, choice:=Parse.List(
-	topFrameCommand,
-	topFrameReload,
-	topFrameLoad,
-	topFrameModule,
-	topFrameEstablish,
-	topFrameSave,
-	topFrameRestore,
-	topFrameNone)));
+        topFrameCommand,
+        topFrameReload,
+        topFrameLoad,
+        topFrameModule,
+        topFrameEstablish,
+        topFrameSave,
+        topFrameRestore,
+        topFrameNone)));
     topEnv.Add(topFrameCommand.name,
       NEW(Parse.Action, grammar:=
-	NEW(Parse.Sequence, items:=Parse.List(
+        NEW(Parse.Sequence, items:=Parse.List(
           NEW(Parse.GivenName, text:="do"),
           Parse.Store(1, 
-	    NEW(Parse.Choice, choice:=Parse.List(
-	      NEW(Parse.Name, Build:=BuildName),
-	      NEW(Parse.Sequence, items:=NIL)))),
+            NEW(Parse.Choice, choice:=Parse.List(
+              NEW(Parse.Name, Build:=BuildName),
+              NEW(Parse.Sequence, items:=NIL)))),
           Parse.Store(2, 
-	    NEW(Parse.Choice, choice:=Parse.List(
-	      NEW(Parse.Name, Build:=BuildName),
-	      NEW(Parse.Sequence, items:=NIL)))),
-	  NEW(Parse.GivenDelimiter, delim:=';'))),
-	Build:=BuildCommand));
+            NEW(Parse.Choice, choice:=Parse.List(
+              NEW(Parse.Name, Build:=BuildName),
+              NEW(Parse.Sequence, items:=NIL)))),
+          NEW(Parse.GivenDelimiter, delim:=';'))),
+        Build:=BuildCommand));
     topEnv.Add(topFrameReload.name,
       NEW(Parse.Action, grammar:=
-	NEW(Parse.Sequence, items:=Parse.List(
+        NEW(Parse.Sequence, items:=Parse.List(
           NEW(Parse.GivenName, text:="reload"),
-	  Parse.Store(1, 
-	    NEW(Parse.Choice, choice:=Parse.List(
-	      NEW(Parse.Name, Build:=BuildReloadName),
-	      NEW(Parse.QuotedString, Build:=BuildReloadString)))),
-	  NEW(Parse.GivenDelimiter, delim:=';'))),
-	Build:=Select1));
+          Parse.Store(1, 
+            NEW(Parse.Choice, choice:=Parse.List(
+              NEW(Parse.Name, Build:=BuildReloadName),
+              NEW(Parse.QuotedString, Build:=BuildReloadString)))),
+          NEW(Parse.GivenDelimiter, delim:=';'))),
+        Build:=Select1));
     topEnv.Add(topFrameLoad.name,
       NEW(Parse.Action, grammar:=
         NEW(Parse.Sequence, items:=Parse.List(
-	  NEW(Parse.GivenName, text:="load"),
-	  Parse.Store(1, NEW(Parse.Name, Build:=BuildLoad)),
-	  NEW(Parse.GivenDelimiter, delim:=';'))),
-	Build:=Select1));
+          NEW(Parse.GivenName, text:="load"),
+          Parse.Store(1, NEW(Parse.Name, Build:=BuildLoad)),
+          NEW(Parse.GivenDelimiter, delim:=';'))),
+        Build:=Select1));
     topEnv.Add(topFrameModule.name,
       NEW(Parse.Action, grammar:=
         NEW(Parse.Sequence, items:=Parse.List(
-	  NEW(Parse.GivenName, text:="module"),
-	  Parse.Store(1, NEW(Parse.Name, Build:=BuildName)),
-	  Parse.Store(2,
-	    NEW(Parse.Choice, choice:=Parse.List(
-	      NEW(Parse.Action, grammar:=
-	        NEW(Parse.Sequence, items:=Parse.List(
-		  NEW(Parse.GivenName, text:="import"),
-		  Parse.Store(3, importList))),
-		Build:=Select3),
-	      NEW(Parse.Sequence, items:=NIL)))),
-	  NEW(Parse.GivenDelimiter, delim:=';'))),
-	Build:=BuildModuleFrame));
+          NEW(Parse.GivenName, text:="module"),
+          Parse.Store(1, NEW(Parse.Name, Build:=BuildName)),
+          Parse.Store(2,
+            NEW(Parse.Choice, choice:=Parse.List(
+              NEW(Parse.Action, grammar:=
+                NEW(Parse.Sequence, items:=Parse.List(
+                  NEW(Parse.GivenName, text:="import"),
+                  Parse.Store(3, importList))),
+                Build:=Select3),
+              NEW(Parse.Sequence, items:=NIL)))),
+          NEW(Parse.GivenDelimiter, delim:=';'))),
+        Build:=BuildModuleFrame));
     topEnv.Add(importList.name,
       NEW(Parse.Choice, choice:=Parse.List(
-	NEW(Parse.Action, grammar:=
-	  NEW(Parse.Sequence, items:=Parse.List(
-	    Parse.Store(1, NEW(Parse.Name, Build:=BuildName)),
-	    Parse.Store(2, importList))),
-	  Build:=BuildImportList),
-	NEW(Parse.Sequence, items:=NIL))));
+        NEW(Parse.Action, grammar:=
+          NEW(Parse.Sequence, items:=Parse.List(
+            Parse.Store(1, NEW(Parse.Name, Build:=BuildName)),
+            Parse.Store(2, importList))),
+          Build:=BuildImportList),
+        NEW(Parse.Sequence, items:=NIL))));
     topEnv.Add(topFrameEstablish.name,
       NEW(Parse.Action, grammar:=
         NEW(Parse.Sequence, items:=Parse.List(
-	  NEW(Parse.GivenName, text:="establish"),
-	  Parse.Store(1, NEW(Parse.Name, Build:=BuildEstablishFrame)),
-	  NEW(Parse.GivenDelimiter, delim:=';'))),
-	Build:=Select1));
+          NEW(Parse.GivenName, text:="establish"),
+          Parse.Store(1, NEW(Parse.Name, Build:=BuildEstablishFrame)),
+          NEW(Parse.GivenDelimiter, delim:=';'))),
+        Build:=Select1));
     topEnv.Add(topFrameSave.name,
       NEW(Parse.Action, grammar:=
         NEW(Parse.Sequence, items:=Parse.List(
-	  NEW(Parse.GivenName, text:="save"),
-	  Parse.Store(1, NEW(Parse.Name, Build:=BuildSaveFrame)),
-	  NEW(Parse.GivenDelimiter, delim:=';'))),
-	Build:=Select1));
+          NEW(Parse.GivenName, text:="save"),
+          Parse.Store(1, NEW(Parse.Name, Build:=BuildSaveFrame)),
+          NEW(Parse.GivenDelimiter, delim:=';'))),
+        Build:=Select1));
     topEnv.Add(topFrameRestore.name,
       NEW(Parse.Action, grammar:=
         NEW(Parse.Sequence, items:=Parse.List(
-	  NEW(Parse.GivenName, text:="restore"),
-	  Parse.Store(1, 
-	    NEW(Parse.Choice, choice:=Parse.List(
-	      NEW(Parse.Name, Build:=BuildRestoreFrame),
-	      NEW(Parse.Action, grammar:=NEW(Parse.Sequence, items:=NIL),
-		Build:=BuildRestoreFirstFrame)))),
-	  NEW(Parse.GivenDelimiter, delim:=';'))),
-	Build:=Select1));
+          NEW(Parse.GivenName, text:="restore"),
+          Parse.Store(1, 
+            NEW(Parse.Choice, choice:=Parse.List(
+              NEW(Parse.Name, Build:=BuildRestoreFrame),
+              NEW(Parse.Action, grammar:=NEW(Parse.Sequence, items:=NIL),
+                Build:=BuildRestoreFirstFrame)))),
+          NEW(Parse.GivenDelimiter, delim:=';'))),
+        Build:=Select1));
     topEnv.Add(topFrameNone.name,
       NEW(Parse.Action, grammar:=
         NEW(Parse.Sequence, items:=NIL),

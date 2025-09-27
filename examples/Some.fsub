@@ -3,9 +3,9 @@
 
 module Some;
 (* Defines
-	Some(ide)type, Some(ide<:type)type
-	pack ide<:type=type as type with term end
-	open term as ide<:type ide:type in term end
+        Some(ide)type, Some(ide<:type)type
+        pack ide<:type=type as type with term end
+        open term as ide<:type ide:type in term end
 *)
 
 (* easy version:
@@ -21,9 +21,9 @@ syntax
   typeBase ::= ...
     [ "Some" "(" typeIde_1 
       { ["<:" type_2 ")" type_3 ] 
-	  :> All(V?) {All(_1<:_2) _3 -> V} -> V
+          :> All(V?) {All(_1<:_2) _3 -> V} -> V
         [")" type_3 ]
-	  :> All(V?) {All(_1) _3 -> V} -> V
+          :> All(V?) {All(_1) _3 -> V} -> V
       } _4
     ] :> _4
 ;

@@ -8,9 +8,9 @@ IMPORT Scanner, Parse;
     GramInfo <: GramInfoBase;
     GramInfoBase = 
       Parse.Tree BRANDED OBJECT
-	topGram: Parse.Grammar;
-	env: Parse.GrammarEnv;
-	adoptAsTopLevelGrammar: BOOLEAN;
+        topGram: Parse.Grammar;
+        env: Parse.GrammarEnv;
+        adoptAsTopLevelGrammar: BOOLEAN;
       END;
 
   VAR 
@@ -30,28 +30,28 @@ IMPORT Scanner, Parse;
      order inverse to the nesting of syntaxDecls. *)
 
 (*
-	grammar ::=
-		clauseList
+        grammar ::=
+                clauseList
 
-	clauseList ::=
-		{ clause [] }
+        clauseList ::=
+                { clause [] }
 
-	clause ::=
-		[ ide "::=" { ["." "." "."] [] } gramExp clauseList ]
+        clause ::=
+                [ ide "::=" { ["." "." "."] [] } gramExp clauseList ]
 
-	gramExp ::=
-		{ ide string "ide" "int" "real" "char" "string"
-		  [ "[" gramExpList "]" action ]
-		  [ "{" gramExpList "}" ]
-		  [ "(" gramExp { [ gramExp "*" action ] [] } ")" ] }
+        gramExp ::=
+                { ide string "ide" "int" "real" "char" "string"
+                  [ "[" gramExpList "]" action ]
+                  [ "{" gramExpList "}" ]
+                  [ "(" gramExp { [ gramExp "*" action ] [] } ")" ] }
 
-	gramExpList ::=
-		{ [ gramExp gramExpList ] [] }
+        gramExpList ::=
+                { [ gramExp gramExpList ] [] }
 
-	action ::=
-		{ [ "=>" "{" actionTermExp "}" ] 
-		  [ ":>" "{" actionTypeExp "}" ] 
-		  [] }
+        action ::=
+                { [ "=>" "{" actionTermExp "}" ] 
+                  [ ":>" "{" actionTypeExp "}" ] 
+                  [] }
 
 *)
 

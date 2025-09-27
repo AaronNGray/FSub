@@ -112,7 +112,7 @@ TYPE
           The client procedure /proc/ is called with /T.lock/ held.
           Therefore, all other operations on the same table will block
           until Enumerate returns (or is aborted by the /proc/ raising an 
-	  exception).
+          exception).
           Also, the /proc/ itself sshould not attempt to perform any
           operation on the same table, or a deadlock will result.
 

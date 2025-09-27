@@ -3,14 +3,14 @@
 
 module Sum;
 (* Defines
-	: A+B = All(C){A->C}->{B->C}->C
-	inl: All(A?) All(B?) A->A+B
-	inr: All(A?) All(B?) B->A+B
-	sum: All(A?) All(B?) All(C?) A+B->{A->C}->{B->C}->C
-	case term
-	  inl(ide:type) term
-	  inr(ide:type) term
-	end,
+        : A+B = All(C){A->C}->{B->C}->C
+        inl: All(A?) All(B?) A->A+B
+        inr: All(A?) All(B?) B->A+B
+        sum: All(A?) All(B?) All(C?) A+B->{A->C}->{B->C}->C
+        case term
+          inl(ide:type) term
+          inr(ide:type) term
+        end,
 *)
 
 syntax
@@ -34,10 +34,10 @@ let sum: All(A?) All(B?) All(C?) A+B->{A->C}->{B->C}->C =
 syntax
   termBase ::= ...
       ["case" term_1
-	"lft" "(" termIde_2 ":" type_3 ")" term_4
-	"rht" "(" termIde_5 ":" type_6 ")" term_7
-	"end"]
-	=> sum(_1)(fun(_2:_3)_4)(fun(_5:_6)_7)
+        "lft" "(" termIde_2 ":" type_3 ")" term_4
+        "rht" "(" termIde_5 ":" type_6 ")" term_7
+        "end"]
+        => sum(_1)(fun(_2:_3)_4)(fun(_5:_6)_7)
 ;
 
 

@@ -3,10 +3,10 @@
 
 module Scott;
 (* Defines
-	V = V->V
-	\x e		(untyped lambda)
-	e.e		(untyped application)
-	i,k,s,y: V	(the usual combinators)
+        V = V->V
+        \x e                (untyped lambda)
+        e.e                (untyped application)
+        i,k,s,y: V        (the usual combinators)
 *)
 
 Let V = Rec(V) V->V;
@@ -14,10 +14,10 @@ Let V = Rec(V) V->V;
 syntax
   termBase ::= ...
     ["\\" termIde_1 term_2] 
-	=> fold(:V)(fun(_1:V)_2)
+        => fold(:V)(fun(_1:V)_2)
   termOper ::= ... *_1
     ["." termAppl_2] 
-	=> unfold(_1)(_2);
+        => unfold(_1)(_2);
 
 let i = \x x
     k = \x \y x
@@ -36,12 +36,12 @@ Let V = Rec(V) {Unit->V}->V;
 syntax
   termBase ::= ...
     { ["@" termIde_1]
-	=> _1(unit)
+        => _1(unit)
       ["\\" termIde_1 term_2] 
-	=> fold(:V)(fun(_1:Unit->V)_2) }
+        => fold(:V)(fun(_1:Unit->V)_2) }
   termOper ::= ... *_1
     ["." termAppl_2] 
-	=> unfold(_1)(fun(u:Unit)_2);
+        => unfold(_1)(fun(u:Unit)_2);
 
 let i = \x @x;
 let k = \x \y @x;

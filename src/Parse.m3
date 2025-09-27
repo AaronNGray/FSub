@@ -41,7 +41,7 @@ PROCEDURE BuildNoQuotedString(<*UNUSED*> self: QuotedString; <*UNUSED*> string: 
       max:=0;
       tree:=Read1(gram, env, base, (*in-out*)max, (*out*)failed);
       IF failed#NIL THEN 
-	Reset(base+max); Error(failed); Scanner.Syntax();
+        Reset(base+max); Error(failed); Scanner.Syntax();
       END;
       RETURN tree;
     END Read;
@@ -61,17 +61,17 @@ PROCEDURE BuildNoQuotedString(<*UNUSED*> self: QuotedString; <*UNUSED*> string: 
     BEGIN
       Scanner.CurrentLocationInfo((*out*)info);
       Formatter.PutText(Out.out, "Parsing "&failedName&" "); 
-	Err.PrintLocation(Out.out, failed.location, info.line);
-	Formatter.PutChar(Out.out, '\n');
+        Err.PrintLocation(Out.out, failed.location, info.line);
+        Formatter.PutChar(Out.out, '\n');
       Formatter.Flush(Out.out);
     END Error;
 
 PROCEDURE NewEnv(): GrammarEnv =
   BEGIN
     RETURN NEW(GrammarEnv, table:=NEW(TextRefTbl.Default).init(),
-	Lookup:=Lookup, Add:=Add, UndoAdd:=UndoAdd,
-	Extend:=Extend, UndoExtend:=UndoExtend,
-	ExtendIter:=ExtendIter, UndoExtendIter:=UndoExtendIter);
+        Lookup:=Lookup, Add:=Add, UndoAdd:=UndoAdd,
+        Extend:=Extend, UndoExtend:=UndoExtend,
+        ExtendIter:=ExtendIter, UndoExtendIter:=UndoExtendIter);
   END NewEnv;
 
 PROCEDURE List(item1,item2,item3,item4,item5,item6,item7,item8, 
@@ -122,7 +122,7 @@ PROCEDURE List(item1,item2,item3,item4,item5,item6,item7,item8,
   VAR value: REFANY;
   BEGIN
     IF env.table.get(name, (*OUT*) value) THEN 
-	Scanner.Syntax("Duplicated non-terminal: "&name);
+        Scanner.Syntax("Duplicated non-terminal: "&name);
     END;
     EVAL env.table.put(name, grammar);
   END Add;
@@ -147,21 +147,21 @@ PROCEDURE List(item1,item2,item3,item4,item5,item6,item7,item8,
       (should disable the error message in Add to do this test). 
       After redefinition gave syntax error for non-undestood reasons.
     | NonTerminal(node) =>
-	IF env.table.in(node.name, (*out*)oldValue) THEN
-	  Err.Msg(Out.out, "Redefining " & node.name);
-	  EVAL env.table.put(name, grammar);
-	  RETURN
-	END;
+        IF env.table.in(node.name, (*out*)oldValue) THEN
+          Err.Msg(Out.out, "Redefining " & node.name);
+          EVAL env.table.put(name, grammar);
+          RETURN
+        END;
  *)
     ELSE
     END;
     EVAL 
       env.table.put(name, 
         NEW(Choice,
-	  choice:=
-	    NEW(GrammarList, first:=value, rest:=
-	    NEW(GrammarList, first:=grammar, rest:=
-	    NIL))));
+          choice:=
+            NEW(GrammarList, first:=value, rest:=
+            NEW(GrammarList, first:=grammar, rest:=
+            NIL))));
   END Extend;
 
   PROCEDURE UndoExtend(env: GrammarEnv; name: TEXT; grammar: Grammar)
@@ -177,9 +177,9 @@ PROCEDURE List(item1,item2,item3,item4,item5,item6,item7,item8,
     END;
     TYPECASE value OF
     | Choice(node) =>
-	IF grammar # node.choice.rest.first THEN
+        IF grammar # node.choice.rest.first THEN
           Scanner.Error("GrammarEnv.UndoExtend: bad undo: "&name);
-	END;
+        END;
         EVAL env.table.put(name, node.choice.first);
     ELSE Scanner.Error("GrammarEnv.UndoExtend failed: "&name);
     END;
@@ -195,14 +195,14 @@ PROCEDURE List(item1,item2,item3,item4,item5,item6,item7,item8,
     END;
     TYPECASE value OF
     | Iter(node) =>
-	IF iterPosPresent AND (iterPos#node.accumPosition) THEN
-	  Scanner.Syntax("Does not mach iteration position: _"&Fmt.Int(iterPos));
-	END;
-	node.iter :=
+        IF iterPosPresent AND (iterPos#node.accumPosition) THEN
+          Scanner.Syntax("Does not mach iteration position: _"&Fmt.Int(iterPos));
+        END;
+        node.iter :=
           NEW(Choice, choice:=
-	    NEW(GrammarList, first:=node.iter, rest:=
-	    NEW(GrammarList, first:=grammar, rest:=
-	    NIL)));
+            NEW(GrammarList, first:=node.iter, rest:=
+            NEW(GrammarList, first:=grammar, rest:=
+            NIL)));
     ELSE
       Scanner.Syntax("Not a grammar iteration: "&name);
     END;
@@ -217,14 +217,14 @@ PROCEDURE List(item1,item2,item3,item4,item5,item6,item7,item8,
     END;
     TYPECASE value OF
     | Iter(iterNode) =>
-	TYPECASE iterNode.iter OF
-	| Choice(choiceNode) =>
-	    IF grammar # choiceNode.choice.rest.first THEN
+        TYPECASE iterNode.iter OF
+        | Choice(choiceNode) =>
+            IF grammar # choiceNode.choice.rest.first THEN
               Scanner.Error("GrammarEnv.UndoExtendIter: bad undo: "&name);
-	    END;
+            END;
             iterNode.iter:=choiceNode.choice.first;
-	ELSE Scanner.Error("GrammarEnv.UndoExtendIter failed: "&name);
-	END;
+        ELSE Scanner.Error("GrammarEnv.UndoExtendIter failed: "&name);
+        END;
     ELSE Scanner.Error("GrammarEnv.UndoExtendIter failed: "&name);
     END;
   END UndoExtendIter;
@@ -235,27 +235,27 @@ PROCEDURE List(item1,item2,item3,item4,item5,item6,item7,item8,
      should be called, followed by either "Scanner.Reset()" or 
      "Error(failed); Scanner.Syntax()" *)
   PROCEDURE Read1(
-	gram: Grammar; env: GrammarEnv;
-	base: INTEGER; VAR (*in-out*) max: INTEGER;
-    	VAR (*out*) failed: Grammar; name: TEXT:=NIL): Tree RAISES ANY =
+        gram: Grammar; env: GrammarEnv;
+        base: INTEGER; VAR (*in-out*) max: INTEGER;
+            VAR (*out*) failed: Grammar; name: TEXT:=NIL): Tree RAISES ANY =
     VAR tree: Tree;
     BEGIN
       TRY
-	(* base is in-out so the stack can be cleaned up properly
-	   even on Err.Fail exceptions occurring during parsing. *)
-	tree:=Read0(gram, env, (*in-out*)base, (*in-out*)max, 
-	  (*out*)failed, name);
+        (* base is in-out so the stack can be cleaned up properly
+           even on Err.Fail exceptions occurring during parsing. *)
+        tree:=Read0(gram, env, (*in-out*)base, (*in-out*)max, 
+          (*out*)failed, name);
       EXCEPT Err.Fail =>
-	Reset(base+max);
-	RAISE Err.Fail;
+        Reset(base+max);
+        RAISE Err.Fail;
       END;
       RETURN tree;
     END Read1;
 
   PROCEDURE Read0(
-	gram: Grammar; env: GrammarEnv;
-	VAR (*in-out*) base, max: INTEGER;
-    	VAR (*out*) failed: Grammar; name: TEXT:=NIL): Tree RAISES ANY =
+        gram: Grammar; env: GrammarEnv;
+        VAR (*in-out*) base, max: INTEGER;
+            VAR (*out*) failed: Grammar; name: TEXT:=NIL): Tree RAISES ANY =
   (*  A NIL result means that a client Build did not care about
       generating a parse grammar. *)
   VAR tree: Tree;
@@ -266,178 +266,178 @@ PROCEDURE List(item1,item2,item3,item4,item5,item6,item7,item8,
   BEGIN
     TYPECASE gram OF <*NOWARN*>
     | NonTerminal(node) =>
-	saveBase := base; saveMax := max;
-	INC(base,max);
-	max := 0;
-	tree := 
-	  Read0(env.Lookup(node.name), env , (*in-out*)base, (*in-out*) max,
-	    (*out*) failed, node.name);
-	FOR i:=0 TO max-1 DO Stack[base+i]:=NIL END;
-	base := saveBase; max := saveMax;
-	IF failed#NIL THEN RETURN NIL; END;
-	RETURN tree;
+        saveBase := base; saveMax := max;
+        INC(base,max);
+        max := 0;
+        tree := 
+          Read0(env.Lookup(node.name), env , (*in-out*)base, (*in-out*) max,
+            (*out*) failed, node.name);
+        FOR i:=0 TO max-1 DO Stack[base+i]:=NIL END;
+        base := saveBase; max := saveMax;
+        IF failed#NIL THEN RETURN NIL; END;
+        RETURN tree;
     | Storage(node) =>
-	tree := 
-	  Read0(node.item, env, (*in-out*)base, (*in-out*)max, 
-	    (*out*)failed, name);
-	IF failed#NIL THEN RETURN NIL END;
-	IF node.position<0 THEN
-	  Err.Fault(Out.out, "Invalid index: _" & Fmt.Int(node.position));
-	END;
-	IF Stack[base+node.position] # NIL THEN
-	  Err.Fault(Out.out, "Redefinition of: _" & Fmt.Int(node.position));
-	END;
-	Stack[base+node.position] := tree;
-	max := MAX(max, node.position+1);
-	RETURN NIL;
+        tree := 
+          Read0(node.item, env, (*in-out*)base, (*in-out*)max, 
+            (*out*)failed, name);
+        IF failed#NIL THEN RETURN NIL END;
+        IF node.position<0 THEN
+          Err.Fault(Out.out, "Invalid index: _" & Fmt.Int(node.position));
+        END;
+        IF Stack[base+node.position] # NIL THEN
+          Err.Fault(Out.out, "Redefinition of: _" & Fmt.Int(node.position));
+        END;
+        Stack[base+node.position] := tree;
+        max := MAX(max, node.position+1);
+        RETURN NIL;
     | Action(node) =>
-	Scanner.CurrentLocationInfo((*out*)locInfo);
-	tree := 
-	  Read0(node.grammar, env, (*in-out*)base, (*in-out*)max, 
-	    (*out*)failed, name);
-	IF failed#NIL THEN RETURN NIL END;
-	RETURN node.Build(base, (*in*)locInfo);
+        Scanner.CurrentLocationInfo((*out*)locInfo);
+        tree := 
+          Read0(node.grammar, env, (*in-out*)base, (*in-out*)max, 
+            (*out*)failed, name);
+        IF failed#NIL THEN RETURN NIL END;
+        RETURN node.Build(base, (*in*)locInfo);
     | EnvCapture(node) =>
-	Scanner.CurrentLocationInfo((*out*)locInfo);
-  	tree := 
-	  Read0(node.grammar, env, (*in-out*)base, (*in-out*)max, 
-	    (*out*) failed, name); 
-	IF failed#NIL THEN RETURN NIL END;
+        Scanner.CurrentLocationInfo((*out*)locInfo);
+          tree := 
+          Read0(node.grammar, env, (*in-out*)base, (*in-out*)max, 
+            (*out*) failed, name); 
+        IF failed#NIL THEN RETURN NIL END;
         RETURN node.Build(base, env, (*in*)locInfo);
      | GivenKeyword(node) =>
-	Scanner.CurrentLocationInfo((*out*)locInfo);
-	IF Scanner.HaveTokenKey(node.key) THEN failed:=NIL
-	ELSE failed:=gram; failedName:=name; RETURN NIL;
-	END;
-	RETURN node.Build((*in*)locInfo);
+        Scanner.CurrentLocationInfo((*out*)locInfo);
+        IF Scanner.HaveTokenKey(node.key) THEN failed:=NIL
+        ELSE failed:=gram; failedName:=name; RETURN NIL;
+        END;
+        RETURN node.Build((*in*)locInfo);
      | GivenIdentifier(node) =>
-	Scanner.CurrentLocationInfo((*out*)locInfo);
-	IF Scanner.HaveTokenIde(node.ide) THEN failed:=NIL
-	ELSE failed:=gram; failedName:=name; RETURN NIL;
-	END;
-	RETURN node.Build((*in*)locInfo);
+        Scanner.CurrentLocationInfo((*out*)locInfo);
+        IF Scanner.HaveTokenIde(node.ide) THEN failed:=NIL
+        ELSE failed:=gram; failedName:=name; RETURN NIL;
+        END;
+        RETURN node.Build((*in*)locInfo);
      | GivenName(node) =>
-	Scanner.CurrentLocationInfo((*out*)locInfo);
-	IF Scanner.HaveTokenName(node.text) THEN failed:=NIL
-	ELSE failed:=gram; failedName:=name; RETURN NIL;
-	END;
-	RETURN node.Build((*in*)locInfo);
+        Scanner.CurrentLocationInfo((*out*)locInfo);
+        IF Scanner.HaveTokenName(node.text) THEN failed:=NIL
+        ELSE failed:=gram; failedName:=name; RETURN NIL;
+        END;
+        RETURN node.Build((*in*)locInfo);
      | GivenDelimiter(node) =>
-	Scanner.CurrentLocationInfo((*out*)locInfo);
-	IF Scanner.HaveTokenDelim(node.delim) THEN failed:=NIL
-	ELSE failed:=gram; failedName:=name; RETURN NIL;
-	END;
-	RETURN node.Build((*in*)locInfo);
+        Scanner.CurrentLocationInfo((*out*)locInfo);
+        IF Scanner.HaveTokenDelim(node.delim) THEN failed:=NIL
+        ELSE failed:=gram; failedName:=name; RETURN NIL;
+        END;
+        RETURN node.Build((*in*)locInfo);
     | Identifier(node) =>
-	Scanner.CurrentLocationInfo((*out*)locInfo);
-	IF Scanner.GetTokenIde((*out*)ide) THEN failed:=NIL
-	ELSE failed:=gram; failedName:=name; RETURN NIL;
-	END;
-	RETURN node.Build(ide, (*in*)locInfo);
+        Scanner.CurrentLocationInfo((*out*)locInfo);
+        IF Scanner.GetTokenIde((*out*)ide) THEN failed:=NIL
+        ELSE failed:=gram; failedName:=name; RETURN NIL;
+        END;
+        RETURN node.Build(ide, (*in*)locInfo);
     | Name(node) =>
-	Scanner.CurrentLocationInfo((*out*)locInfo);
-	IF Scanner.GetTokenName((*out*)text) THEN failed:=NIL
-	ELSE failed:=gram; failedName:=name; RETURN NIL;
-	END;
-	RETURN node.Build(text, (*in*)locInfo);
+        Scanner.CurrentLocationInfo((*out*)locInfo);
+        IF Scanner.GetTokenName((*out*)text) THEN failed:=NIL
+        ELSE failed:=gram; failedName:=name; RETURN NIL;
+        END;
+        RETURN node.Build(text, (*in*)locInfo);
      | QuotedChar(node) =>
-	Scanner.CurrentLocationInfo((*out*)locInfo);
-	IF Scanner.GetTokenChar((*out*)char) THEN failed:=NIL
-	ELSE failed:=gram; failedName:=name; RETURN NIL;
-	END;
-	RETURN node.Build(char, (*in*)locInfo);
+        Scanner.CurrentLocationInfo((*out*)locInfo);
+        IF Scanner.GetTokenChar((*out*)char) THEN failed:=NIL
+        ELSE failed:=gram; failedName:=name; RETURN NIL;
+        END;
+        RETURN node.Build(char, (*in*)locInfo);
      | Integer(node) =>
-	Scanner.CurrentLocationInfo((*out*)locInfo);
-	IF Scanner.GetTokenInt((*out*)int) THEN failed:=NIL
-	ELSE failed:=gram; failedName:=name; RETURN NIL;
-	END;
-	RETURN node.Build(int, (*in*)locInfo);
+        Scanner.CurrentLocationInfo((*out*)locInfo);
+        IF Scanner.GetTokenInt((*out*)int) THEN failed:=NIL
+        ELSE failed:=gram; failedName:=name; RETURN NIL;
+        END;
+        RETURN node.Build(int, (*in*)locInfo);
      | Real(node) =>
-	Scanner.CurrentLocationInfo((*out*)locInfo);
-	IF Scanner.GetTokenReal((*out*)real) THEN failed:=NIL
-	ELSE failed:=gram; failedName:=name; RETURN NIL;
-	END;
-	RETURN node.Build(real, (*in*)locInfo);
+        Scanner.CurrentLocationInfo((*out*)locInfo);
+        IF Scanner.GetTokenReal((*out*)real) THEN failed:=NIL
+        ELSE failed:=gram; failedName:=name; RETURN NIL;
+        END;
+        RETURN node.Build(real, (*in*)locInfo);
      | QuotedString(node) =>
-	Scanner.CurrentLocationInfo((*out*)locInfo);
-	IF Scanner.GetTokenString((*out*)string) THEN failed:=NIL
-	ELSE failed:=gram; failedName:=name; RETURN NIL;
-	END;
-	RETURN node.Build(string, (*in*)locInfo);
+        Scanner.CurrentLocationInfo((*out*)locInfo);
+        IF Scanner.GetTokenString((*out*)string) THEN failed:=NIL
+        ELSE failed:=gram; failedName:=name; RETURN NIL;
+        END;
+        RETURN node.Build(string, (*in*)locInfo);
      | Sequence(node) =>
-	Read0List(node.items, env, (*in-out*)base, (*in-out*)max, 
-	  (*out*) failed, name);
-	RETURN NIL;
+        Read0List(node.items, env, (*in-out*)base, (*in-out*)max, 
+          (*out*) failed, name);
+        RETURN NIL;
     | Choice(node) =>
-	list := node.choice;
-	saveMax := max;
-	LOOP
-	  IF list=NIL THEN 
-	    failed := gram; failedName:=name; RETURN NIL;
-	  END;
-	  scanPoint := Scanner.scanPoint;
-	  tree := 
-	    Read0(list.first, env, (*in-out*) base, (*in-out*) max, 
-	      (*out*) failed, name);
-	  FOR i:=saveMax TO max-1 DO Stack[base+i]:=NIL END;
-	  max := saveMax;
-	  IF failed=NIL THEN RETURN tree END;
-	  IF failed#NIL AND scanPoint#Scanner.scanPoint THEN RETURN NIL END;
-	  list := list.rest;
-	END;
+        list := node.choice;
+        saveMax := max;
+        LOOP
+          IF list=NIL THEN 
+            failed := gram; failedName:=name; RETURN NIL;
+          END;
+          scanPoint := Scanner.scanPoint;
+          tree := 
+            Read0(list.first, env, (*in-out*) base, (*in-out*) max, 
+              (*out*) failed, name);
+          FOR i:=saveMax TO max-1 DO Stack[base+i]:=NIL END;
+          max := saveMax;
+          IF failed=NIL THEN RETURN tree END;
+          IF failed#NIL AND scanPoint#Scanner.scanPoint THEN RETURN NIL END;
+          list := list.rest;
+        END;
     | Iter(node) =>
-	tree := 
-	  Read0(node.base, env, (*in-out*)base, (*in-out*)max, 
-	    (*out*) failed, name);
-	IF failed#NIL THEN RETURN NIL END;
-	IF node.accum THEN
-	  IF node.accumPosition<0 THEN
-	    Err.Fault(Out.out, "Invalid index: _" 
-	      & Fmt.Int(node.accumPosition));
-	  END;
-	  Stack[base+node.accumPosition] := tree;
-	  max := MAX(max, node.accumPosition+1);
-	END;
-	saveMax := max;
-	LOOP
-	  scanPoint := Scanner.scanPoint;
-	  tree := 
-	    Read0(node.iter, env, (*in-out*)base, (*in-out*)max, 
-	      (*out*)failed, name);
-	  FOR i:=saveMax TO max-1 DO Stack[base+i]:=NIL END;
-	  max := saveMax;
-	  IF failed#NIL AND scanPoint#Scanner.scanPoint THEN RETURN NIL END;
-	  IF failed#NIL THEN
-	    failed:=NIL; 
-	    IF node.accum THEN
-	      RETURN Stack[base+node.accumPosition];
-	    ELSE RETURN NIL;
-	    END;
-	  END;
-	  IF node.accum THEN
-	    Stack[base+node.accumPosition] := tree;
-	  END;
-	END;
+        tree := 
+          Read0(node.base, env, (*in-out*)base, (*in-out*)max, 
+            (*out*) failed, name);
+        IF failed#NIL THEN RETURN NIL END;
+        IF node.accum THEN
+          IF node.accumPosition<0 THEN
+            Err.Fault(Out.out, "Invalid index: _" 
+              & Fmt.Int(node.accumPosition));
+          END;
+          Stack[base+node.accumPosition] := tree;
+          max := MAX(max, node.accumPosition+1);
+        END;
+        saveMax := max;
+        LOOP
+          scanPoint := Scanner.scanPoint;
+          tree := 
+            Read0(node.iter, env, (*in-out*)base, (*in-out*)max, 
+              (*out*)failed, name);
+          FOR i:=saveMax TO max-1 DO Stack[base+i]:=NIL END;
+          max := saveMax;
+          IF failed#NIL AND scanPoint#Scanner.scanPoint THEN RETURN NIL END;
+          IF failed#NIL THEN
+            failed:=NIL; 
+            IF node.accum THEN
+              RETURN Stack[base+node.accumPosition];
+            ELSE RETURN NIL;
+            END;
+          END;
+          IF node.accum THEN
+            Stack[base+node.accumPosition] := tree;
+          END;
+        END;
     END;
   END Read0;
 
   PROCEDURE Read0List(
-	gramList: GrammarList; env: GrammarEnv; 
-	VAR (*in-out*) base, max: INTEGER;
-	VAR (*out*) failed: Grammar; name: TEXT:=NIL) RAISES ANY =
+        gramList: GrammarList; env: GrammarEnv; 
+        VAR (*in-out*) base, max: INTEGER;
+        VAR (*out*) failed: Grammar; name: TEXT:=NIL) RAISES ANY =
     VAR tree: Tree;
     BEGIN
       failed := NIL;
       IF gramList=NIL THEN RETURN
       ELSE
         tree := 
-	  Read0(gramList.first, env, (*in-out*)base, (*in-out*)max, 
-	    (*out*)failed, name);
-	IF failed#NIL THEN RETURN 
-	ELSE 
-	  Read0List(gramList.rest, env, (*in-out*)base, (*in-out*)max, 
-	    (*out*)failed, name);
-	END;
+          Read0(gramList.first, env, (*in-out*)base, (*in-out*)max, 
+            (*out*)failed, name);
+        IF failed#NIL THEN RETURN 
+        ELSE 
+          Read0List(gramList.rest, env, (*in-out*)base, (*in-out*)max, 
+            (*out*)failed, name);
+        END;
       END;
     END Read0List;
 

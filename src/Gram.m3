@@ -12,7 +12,7 @@ IMPORT String, Err, Text, Out, Formatter, Scanner, Parse, Act;
     Parse.GrammarListRoot = Parse.Tree BRANDED OBJECT END;
     Parse.GivenKeyword =
       Parse.GivenKeywordBase BRANDED OBJECT
-	ide: TEXT;
+        ide: TEXT;
       END;
     Parse.Action =
       Parse.ActionBase BRANDED OBJECT
@@ -21,8 +21,8 @@ IMPORT String, Err, Text, Out, Formatter, Scanner, Parse, Act;
 
     GramInfo =
       GramInfoBase BRANDED OBJECT
-	clauseList: ClauseList;
-	oldKeySet, newKeySet: Scanner.KeywordSet;
+        clauseList: ClauseList;
+        oldKeySet, newKeySet: Scanner.KeywordSet;
       END;
 
 TYPE
@@ -58,17 +58,17 @@ TYPE
     BEGIN
       LOOP
         IF list=NIL THEN RETURN END;
-	IF list.extend THEN
-	  IF list.extendIter THEN
-	    env.ExtendIter(list.ide.ide, list.iterPosPresent, list.iterPos,
-		list.gram);
-	  ELSE
-	    env.Extend(list.ide.ide, list.gram);
-	  END;
-	ELSE
-	  env.Add(list.ide.ide, list.gram);
-	END;
-	list.inserted := TRUE;
+        IF list.extend THEN
+          IF list.extendIter THEN
+            env.ExtendIter(list.ide.ide, list.iterPosPresent, list.iterPos,
+                list.gram);
+          ELSE
+            env.Extend(list.ide.ide, list.gram);
+          END;
+        ELSE
+          env.Add(list.ide.ide, list.gram);
+        END;
+        list.inserted := TRUE;
         list := list.rest;
       END;
     END MergeEnv;
@@ -77,18 +77,18 @@ TYPE
     BEGIN
       LOOP
         IF list=NIL THEN RETURN END;
-	IF list.inserted THEN
-	  IF list.extend THEN
-	    IF list.extendIter THEN
-	      env.UndoExtendIter(list.ide.ide, list.gram);
-	    ELSE
-	      env.UndoExtend(list.ide.ide, list.gram);
-	    END;
-	  ELSE
-	    env.UndoAdd(list.ide.ide);
-	  END;
-	END;
-	list.inserted := FALSE;
+        IF list.inserted THEN
+          IF list.extend THEN
+            IF list.extendIter THEN
+              env.UndoExtendIter(list.ide.ide, list.gram);
+            ELSE
+              env.UndoExtend(list.ide.ide, list.gram);
+            END;
+          ELSE
+            env.UndoAdd(list.ide.ide);
+          END;
+        END;
+        list.inserted := FALSE;
         list := list.rest;
       END;
     END UndoMergeEnv;
@@ -97,7 +97,7 @@ TYPE
     BEGIN
       LOOP
         IF list=NIL THEN RETURN END;
-	BeKeywordsOfGram(list.gram, keySet);
+        BeKeywordsOfGram(list.gram, keySet);
         list := list.rest;
       END;
     END BeKeywords;
@@ -106,7 +106,7 @@ TYPE
     BEGIN
       LOOP
         IF list=NIL THEN RETURN END;
-	BeKeywordsOfGram(list.first, keySet);
+        BeKeywordsOfGram(list.first, keySet);
         list := list.rest;
       END;
     END BeKeywordsOfGramList;
@@ -120,15 +120,15 @@ TYPE
       | Parse.Action(node) => BeKeywordsOfGram(node.grammar, keySet);
       | Parse.EnvCapture(node) => BeKeywordsOfGram(node.grammar, keySet);
       | Parse.GivenKeyword(node) => 
-	  node.key := Scanner.BeKeyword(node.ide, keySet);
+          node.key := Scanner.BeKeyword(node.ide, keySet);
       | Parse.Identifier, Parse.QuotedChar, Parse.Integer, Parse.Real,
-	Parse.QuotedString, Parse.GivenDelimiter =>
+        Parse.QuotedString, Parse.GivenDelimiter =>
       | Parse.Sequence(node) => 
-	  BeKeywordsOfGramList(node.items, keySet);
+          BeKeywordsOfGramList(node.items, keySet);
       | Parse.Choice(node) => BeKeywordsOfGramList(node.choice, keySet);
       | Parse.Iter(node) =>
-	  BeKeywordsOfGram(node.base, keySet); 
-	  BeKeywordsOfGram(node.iter, keySet);
+          BeKeywordsOfGram(node.base, keySet); 
+          BeKeywordsOfGram(node.iter, keySet);
       END;
     END BeKeywordsOfGram;
 
@@ -146,26 +146,26 @@ TYPE
   END PrintClauseList;
 
   PROCEDURE BuildInteger(<*UNUSED*> self: Parse.Integer; int: INTEGER;
-	<*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
+        <*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
     BEGIN
       RETURN NEW(IntegerTemp, int:=int);
     END BuildInteger;
 
   PROCEDURE BuildIde(<*UNUSED*> self: Parse.Identifier; name: TEXT;
-	<*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
+        <*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
     BEGIN
       RETURN NEW(IdeNode, ide:=name);
     END BuildIde;
 
   PROCEDURE BuildName(<*UNUSED*> self: Parse.GivenName;
-	<*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
+        <*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
     BEGIN
       RETURN NEW(TempFlag);
     END BuildName;
 
   PROCEDURE BuildSyntaxDecl(<*UNUSED*> self: Parse.EnvCapture; 
-	base: INTEGER; env: Parse.GrammarEnv;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        base: INTEGER; env: Parse.GrammarEnv;
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     VAR clauseList: ClauseList; topGram: Parse.Grammar;
       oldKeySet, newKeySet: Scanner.KeywordSet;
     BEGIN
@@ -173,27 +173,27 @@ TYPE
       oldKeySet := Scanner.GetKeywordSet();
       TRY
         newKeySet := Scanner.CopyKeywordSet(oldKeySet);
-	(* -- or: newKeySet := Scanner.NewKeywordSet(); *)
-	(* -- there should be a way, automatic or explicity
-	  to decide whether the old keyword should be imported
-	  in the new lexical environment *)
+        (* -- or: newKeySet := Scanner.NewKeywordSet(); *)
+        (* -- there should be a way, automatic or explicity
+          to decide whether the old keyword should be imported
+          in the new lexical environment *)
         Scanner.UseKeywordSet(newKeySet);
         BeKeywords(clauseList, newKeySet);
         MergeEnv(clauseList, env);
-	IF Scanner.TopLevel() THEN PrintClauseList(Out.out, clauseList) END;
+        IF Scanner.TopLevel() THEN PrintClauseList(Out.out, clauseList) END;
         topGram := NEW(Parse.NonTerminal,
-	  location:=Err.NewLineLocation(info),
-	  name:=clauseList.ide.ide);
+          location:=Err.NewLineLocation(info),
+          name:=clauseList.ide.ide);
       EXCEPT Err.Fail => 
-	UndoMergeEnv(clauseList, env); 
-	Scanner.UseKeywordSet(oldKeySet);
-	RAISE Err.Fail;
+        UndoMergeEnv(clauseList, env); 
+        Scanner.UseKeywordSet(oldKeySet);
+        RAISE Err.Fail;
       END;
       RETURN 
-	NEW(GramInfo, topGram:=topGram, env:=env,
-	  adoptAsTopLevelGrammar:=Parse.Stack[base+2]#NIL,
+        NEW(GramInfo, topGram:=topGram, env:=env,
+          adoptAsTopLevelGrammar:=Parse.Stack[base+2]#NIL,
           clauseList:=clauseList, 
-	  oldKeySet:=oldKeySet, newKeySet:=newKeySet);
+          oldKeySet:=oldKeySet, newKeySet:=newKeySet);
     END BuildSyntaxDecl;
 
   PROCEDURE UndoSyntaxDecl(info: GramInfo) RAISES ANY =
@@ -203,8 +203,8 @@ TYPE
     END UndoSyntaxDecl;
 
   PROCEDURE BuildSyntax(<*UNUSED*> self: Parse.EnvCapture; 
-	base: INTEGER; env: Parse.GrammarEnv;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        base: INTEGER; env: Parse.GrammarEnv;
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     VAR tree: Parse.Tree; clauseList: ClauseList;
       topGram: Parse.Grammar; oldKeySet, newKeySet: Scanner.KeywordSet;
       ide: TEXT; 
@@ -212,26 +212,26 @@ TYPE
       clauseList := NARROW(Parse.Stack[base+1], ClauseList);
       oldKeySet := Scanner.GetKeywordSet();
       TRY
-	newKeySet := Scanner.CopyKeywordSet(oldKeySet);
-	(* -- or: newKeySet := Scanner.NewKeywordSet(); *)
-	(* -- there should be a way, automatic or explicity
-	  to decide whether the old keyword should be imported
-	  in the new lexical environment *)
-	Scanner.UseKeywordSet(newKeySet);
-	BeKeywords(clauseList, newKeySet);
+        newKeySet := Scanner.CopyKeywordSet(oldKeySet);
+        (* -- or: newKeySet := Scanner.NewKeywordSet(); *)
+        (* -- there should be a way, automatic or explicity
+          to decide whether the old keyword should be imported
+          in the new lexical environment *)
+        Scanner.UseKeywordSet(newKeySet);
+        BeKeywords(clauseList, newKeySet);
         MergeEnv(clauseList, env);
-	topGram := NEW(Parse.NonTerminal, 
-	  location:=Err.NewLineLocation(info),
-	  name:=clauseList.ide.ide);
+        topGram := NEW(Parse.NonTerminal, 
+          location:=Err.NewLineLocation(info),
+          name:=clauseList.ide.ide);
         tree := Parse.Read(topGram, env, base+2);
-	Scanner.UseKeywordSet(oldKeySet);
-	IF Scanner.HaveTokenKey(keyEnd) THEN
-	ELSIF Scanner.GetTokenIde((*out*) ide) AND Text.Equal(ide, "end") THEN
-	ELSE Scanner.Syntax("Parse failed", " at \'end\' of \'syntax\'") 
-	END;
+        Scanner.UseKeywordSet(oldKeySet);
+        IF Scanner.HaveTokenKey(keyEnd) THEN
+        ELSIF Scanner.GetTokenIde((*out*) ide) AND Text.Equal(ide, "end") THEN
+        ELSE Scanner.Syntax("Parse failed", " at \'end\' of \'syntax\'") 
+        END;
       FINALLY
-	UndoMergeEnv(clauseList, env);
-	Scanner.UseKeywordSet(oldKeySet);
+        UndoMergeEnv(clauseList, env);
+        Scanner.UseKeywordSet(oldKeySet);
       END;
       IF tree=NIL THEN RETURN Act.DefaultTree(Err.NewLineLocation(info));
       ELSE RETURN tree;
@@ -239,7 +239,7 @@ TYPE
     END BuildSyntax;
 
   PROCEDURE BuildGrammar(<*UNUSED*> self:Parse.Action; base: INTEGER;
-	<*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
+        <*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
     VAR list: ClauseList;
     BEGIN
       list := NARROW(Parse.Stack[base+1], ClauseList);
@@ -248,19 +248,19 @@ TYPE
     END BuildGrammar;
 
   PROCEDURE BuildClauseList(<*UNUSED*> self: Parse.Action; base: INTEGER;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     VAR clauseExtends: ClauseExtends;
     BEGIN
       clauseExtends:=NARROW(Parse.Stack[base+2], ClauseExtends);
       RETURN 
         NEW(ClauseList, location:=Err.NewLineLocation(info),
-	  ide:=NARROW(Parse.Stack[base+1], IdeNode),
-	  extend:=clauseExtends.extend,
-	  extendIter:=clauseExtends.iter,
-	  iterPosPresent:=clauseExtends.iterPosPresent,
-	  iterPos:=clauseExtends.iterPos,
-	  gram:=NARROW(Parse.Stack[base+3], Parse.Grammar),
-	  rest:=NARROW(Parse.Stack[base+4], ClauseList)); 
+          ide:=NARROW(Parse.Stack[base+1], IdeNode),
+          extend:=clauseExtends.extend,
+          extendIter:=clauseExtends.iter,
+          iterPosPresent:=clauseExtends.iterPosPresent,
+          iterPos:=clauseExtends.iterPos,
+          gram:=NARROW(Parse.Stack[base+3], Parse.Grammar),
+          rest:=NARROW(Parse.Stack[base+4], ClauseList)); 
     END BuildClauseList;
 
   PROCEDURE BuildClauseExtendsChoice(<*UNUSED*> self: Parse.Action;
@@ -268,7 +268,7 @@ TYPE
         : Parse.Tree =
     BEGIN
       RETURN NEW(ClauseExtends, extend:=TRUE, iter:=FALSE,
-	iterPosPresent:=FALSE, iterPos:=0);
+        iterPosPresent:=FALSE, iterPos:=0);
     END BuildClauseExtendsChoice;
 
   PROCEDURE BuildClauseExtendsIterPos(<*UNUSED*> self: Parse.Action; 
@@ -276,8 +276,8 @@ TYPE
         : Parse.Tree =
     BEGIN
       RETURN NEW(ClauseExtends, extend:=TRUE, iter:=TRUE,
-	iterPosPresent:=TRUE, 
-	iterPos:=NARROW(Parse.Stack[base+3], IntegerTemp).int);
+        iterPosPresent:=TRUE, 
+        iterPos:=NARROW(Parse.Stack[base+3], IntegerTemp).int);
     END BuildClauseExtendsIterPos;
 
   PROCEDURE BuildClauseExtendsIterNoPos(<*UNUSED*> self: Parse.Action;
@@ -285,7 +285,7 @@ TYPE
         : Parse.Tree =
     BEGIN
       RETURN NEW(ClauseExtends, extend:=TRUE, iter:=TRUE,
-	iterPosPresent:=FALSE, iterPos:=0);
+        iterPosPresent:=FALSE, iterPos:=0);
     END BuildClauseExtendsIterNoPos;
 
   PROCEDURE BuildClauseExtendsIter(<*UNUSED*> self: Parse.Action;
@@ -303,16 +303,16 @@ TYPE
     END BuildClauseExtendsNo;
 
   PROCEDURE BuildClauseExtendsYes(<*UNUSED*> self: Parse.Action; base: INTEGER;
-	<*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
+        <*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
     BEGIN
       RETURN Parse.Stack[base+1];
     END BuildClauseExtendsYes;
 
   PROCEDURE BuildGramIde(<*UNUSED*> self: Parse.Identifier; name: TEXT;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     BEGIN
       RETURN NEW(Parse.NonTerminal, location:=Err.NewLineLocation(info),
- 	name:=name);
+         name:=name);
     END BuildGramIde;
 
   PROCEDURE BuildGramString(<*UNUSED*> self: Parse.QuotedString;
@@ -320,162 +320,162 @@ TYPE
       : Parse.Tree RAISES ANY =
     BEGIN
       IF String.Length(string)=0 THEN 
-	Err.Fault(Out.out, "Invalid token: \"\"") 
+        Err.Fault(Out.out, "Invalid token: \"\"") 
       END;
       IF (String.Length(string)=1) AND Scanner.IsDelimiter(string[0]) THEN
-	RETURN 
-	  NEW(Parse.GivenDelimiter, location:=Err.NewLineLocation(info),
-	    delim:=string[0], 
-	    Build:=Act.BuildActionDelimiter);
+        RETURN 
+          NEW(Parse.GivenDelimiter, location:=Err.NewLineLocation(info),
+            delim:=string[0], 
+            Build:=Act.BuildActionDelimiter);
       ELSIF Scanner.IsIdentifier(string) THEN
         RETURN 
-	    (* Fill the key field later; store it in ide for now. *)
-	    NEW(Parse.GivenKeyword, location:=Err.NewLineLocation(info),
-	      ide:=String.ToText(string), key:=NIL,
-	      Build:=Act.BuildActionKeyword);
+            (* Fill the key field later; store it in ide for now. *)
+            NEW(Parse.GivenKeyword, location:=Err.NewLineLocation(info),
+              ide:=String.ToText(string), key:=NIL,
+              Build:=Act.BuildActionKeyword);
       ELSE
         <*NOWARN*> Err.Fault(Out.out, "Invalid token: "&String.ToText(string));
       END;
     END BuildGramString;
 
   PROCEDURE BuildGramKeyIde(<*UNUSED*> self: Parse.GivenKeyword;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     BEGIN
       RETURN NEW(Parse.Identifier, location:=Err.NewLineLocation(info),
-	Build:=Act.BuildActionIdentifier);
+        Build:=Act.BuildActionIdentifier);
     END BuildGramKeyIde;
 
   PROCEDURE BuildGramKeyInt(<*UNUSED*> self: Parse.GivenKeyword;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     BEGIN
       RETURN NEW(Parse.Integer, location:=Err.NewLineLocation(info),
-	Build:=Act.BuildActionInteger);
+        Build:=Act.BuildActionInteger);
     END BuildGramKeyInt;
 
   PROCEDURE BuildGramKeyReal(<*UNUSED*> self: Parse.GivenKeyword;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     BEGIN
       RETURN NEW(Parse.Real, location:=Err.NewLineLocation(info),
-	Build:=Act.BuildActionReal);
+        Build:=Act.BuildActionReal);
     END BuildGramKeyReal;
 
   PROCEDURE BuildGramKeyChar(<*UNUSED*> self: Parse.GivenKeyword;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     BEGIN
       RETURN NEW(Parse.QuotedChar, location:=Err.NewLineLocation(info),
-	Build:=Act.BuildActionChar);
+        Build:=Act.BuildActionChar);
     END BuildGramKeyChar;
 
   PROCEDURE BuildGramKeyString(<*UNUSED*> self: Parse.GivenKeyword;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     BEGIN
       RETURN NEW(Parse.QuotedString, location:=Err.NewLineLocation(info),
-	Build:=Act.BuildActionString);
+        Build:=Act.BuildActionString);
     END BuildGramKeyString;
 
   PROCEDURE BuildGramList(<*UNUSED*> self: Parse.Action; base: INTEGER;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     BEGIN
       RETURN 
         NEW(Parse.GrammarList, location:=Err.NewLineLocation(info),
-	  first:=Parse.Stack[base+1],
-	  rest:=Parse.Stack[base+2]);
+          first:=Parse.Stack[base+1],
+          rest:=Parse.Stack[base+2]);
     END BuildGramList;
 
   PROCEDURE BuildActionPattern(self: Parse.Action; base: INTEGER;
-	<*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        <*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     BEGIN
       RETURN Act.InstantiatePattern(self.action, base);
     END BuildActionPattern;
 
   PROCEDURE BuildStorage(<*UNUSED*> self: Parse.Action; base: INTEGER;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     BEGIN
       RETURN NEW(Parse.Storage, location:=Err.NewLineLocation(info),
-	position:=NARROW(Parse.Stack[base+3], IntegerTemp).int,
-	item:=Parse.Stack[base+1]);
+        position:=NARROW(Parse.Stack[base+3], IntegerTemp).int,
+        item:=Parse.Stack[base+1]);
     END BuildStorage;
 
   PROCEDURE BuildGramExpSequence(<*UNUSED*> self: Parse.Action; base: INTEGER;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     BEGIN
       RETURN NEW(Parse.Sequence, location:=Err.NewLineLocation(info),
-	items:=Parse.Stack[base+1]);
+        items:=Parse.Stack[base+1]);
     END BuildGramExpSequence;
 
   PROCEDURE BuildGramExpChoice(<*UNUSED*> self: Parse.Action; base: INTEGER;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     BEGIN
       RETURN NEW(Parse.Choice, location:=Err.NewLineLocation(info),
-	choice:=Parse.Stack[base+1]);
+        choice:=Parse.Stack[base+1]);
     END BuildGramExpChoice;
 
   PROCEDURE BuildGramExpParens(<*UNUSED*> self: Parse.Action; base: INTEGER;
-	<*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
+        <*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
     BEGIN
       RETURN Parse.Stack[base+6];
     END BuildGramExpParens;
 
   PROCEDURE BuildGramExpBase(<*UNUSED*> self: Parse.Action; base: INTEGER;
-	<*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
+        <*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
     BEGIN
       RETURN Parse.Stack[base+1];
     END BuildGramExpBase;
 
   PROCEDURE BuildGramExpIter(<*UNUSED*> self: Parse.Action; base: INTEGER;
-	<*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
+        <*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
     BEGIN
       RETURN Parse.Stack[base+5];
     END BuildGramExpIter;
 
   PROCEDURE BuildGramExpIterNoPos(<*UNUSED*> self: Parse.Action; base: INTEGER;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     BEGIN
       RETURN NEW(Parse.Iter, location:=Err.NewLineLocation(info),
-	base:=Parse.Stack[base+1], 
-	iter:=Parse.Stack[base+3],
-	accum:=FALSE,
-	accumPosition:=0);
+        base:=Parse.Stack[base+1], 
+        iter:=Parse.Stack[base+3],
+        accum:=FALSE,
+        accumPosition:=0);
     END BuildGramExpIterNoPos;
 
   PROCEDURE BuildGramExpIterPos(<*UNUSED*> self: Parse.Action; base: INTEGER;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     BEGIN
       RETURN NEW(Parse.Iter, location:=Err.NewLineLocation(info),
-	base:=Parse.Stack[base+1], 
-	iter:=Parse.Stack[base+3],
-	accum:=TRUE,
+        base:=Parse.Stack[base+1], 
+        iter:=Parse.Stack[base+3],
+        accum:=TRUE,
         accumPosition:=NARROW(Parse.Stack[base+4], IntegerTemp).int);
     END BuildGramExpIterPos;
 
   PROCEDURE BuildTermAction(<*UNUSED*> self: Parse.Action; base: INTEGER;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     BEGIN
       Act.CheckPattern(Parse.Stack[base+3]);
       RETURN NEW(Parse.Action, location:=Err.NewLineLocation(info),
-	grammar:=Parse.Stack[base+1],
-	action:=Parse.Stack[base+3],
-	Build:=BuildActionPattern);
+        grammar:=Parse.Stack[base+1],
+        action:=Parse.Stack[base+3],
+        Build:=BuildActionPattern);
     END BuildTermAction;
 
   PROCEDURE BuildTypeAction(<*UNUSED*> self: Parse.Action; base: INTEGER;
-	READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
+        READONLY info: Err.LocationInfo): Parse.Tree RAISES ANY =
     BEGIN
       Act.CheckPattern(Parse.Stack[base+3]);
       RETURN NEW(Parse.Action, location:=Err.NewLineLocation(info),
-	grammar:=Parse.Stack[base+1],
-	action:=Parse.Stack[base+3],
-	Build:=BuildActionPattern);
+        grammar:=Parse.Stack[base+1],
+        action:=Parse.Stack[base+3],
+        Build:=BuildActionPattern);
     END BuildTypeAction;
 
   PROCEDURE BuildSingle(<*UNUSED*> self: Parse.Action; base: INTEGER;
-	<*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
+        <*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
     BEGIN
       RETURN Parse.Stack[base+1];
     END BuildSingle;
 
   PROCEDURE BuildGramExp(<*UNUSED*> self: Parse.Action; base: INTEGER;
-	<*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
+        <*UNUSED*> READONLY info: Err.LocationInfo): Parse.Tree =
     BEGIN
       RETURN Parse.Stack[base+2];
     END BuildGramExp;
@@ -528,7 +528,7 @@ TYPE
   VAR keyEnd: Scanner.Keyword;
 
   PROCEDURE InitGrammars(
-	VAR (*out*) syntaxTerm, syntaxDecl: Parse.NonTerminal) RAISES ANY =
+        VAR (*out*) syntaxTerm, syntaxDecl: Parse.NonTerminal) RAISES ANY =
   BEGIN
 
     Act.GetGrammars((*out*) actionTermExp, (*out*) actionTypeExp);
@@ -537,224 +537,224 @@ TYPE
     syntaxDecl := synDecl;
 
 (* synDecl ::=
-	[ "syntax" grammar ]
+        [ "syntax" grammar ]
 *)
     env.Add(synDecl.name,
       NEW(Parse.EnvCapture, grammar :=
-	NEW(Parse.Sequence, items:=
-	  Parse.List(
-	    NEW(Parse.GivenKeyword, key:=keySyntax),
-	    Parse.Store(2,
-	      NEW(Parse.Choice, choice:=Parse.List(
-		NEW(Parse.GivenName, text:="toplevel", Build:=BuildName),
-		NEW(Parse.Sequence, items:=NIL)))),
-	    Parse.Store(1, grammar))),
-	Build:=BuildSyntaxDecl));
+        NEW(Parse.Sequence, items:=
+          Parse.List(
+            NEW(Parse.GivenKeyword, key:=keySyntax),
+            Parse.Store(2,
+              NEW(Parse.Choice, choice:=Parse.List(
+                NEW(Parse.GivenName, text:="toplevel", Build:=BuildName),
+                NEW(Parse.Sequence, items:=NIL)))),
+            Parse.Store(1, grammar))),
+        Build:=BuildSyntaxDecl));
 
 (* synTerm ::=
-	[ "syntax" grammar "in" ... "end" ]
+        [ "syntax" grammar "in" ... "end" ]
 *)
     env.Add(synTerm.name,
       NEW(Parse.EnvCapture, grammar:=
         NEW(Parse.Sequence, items:=
-	  Parse.List(
+          Parse.List(
             NEW(Parse.GivenKeyword, key:=keySyntax), 
             Parse.Store(1, grammar),
             NEW(Parse.GivenKeyword, key:=keyIn))), 
         Build:=BuildSyntax));
 
 (* grammar ::=
-	clauseSeq
+        clauseSeq
 *)
     env.Add(grammar.name,
       NEW(Parse.Action,
-	grammar:=Parse.Store(1, clauseSeq),
-	Build:=BuildGrammar));
+        grammar:=Parse.Store(1, clauseSeq),
+        Build:=BuildGrammar));
 
 (* clauseSeq ::=
-	[ gramExpIde "::=" clauseExtends gramExp clauseRest ]
+        [ gramExpIde "::=" clauseExtends gramExp clauseRest ]
 *)
     env.Add(clauseSeq.name,
       NEW(Parse.Action, grammar :=
         NEW(Parse.Sequence, items:=Parse.List(
-	  Parse.Store(1, gramExpIde),
-	  NEW(Parse.GivenKeyword, key:=keyDefSyn),
-	  Parse.Store(2, clauseExtends),
-	  Parse.Store(3, gramExp),
-	  Parse.Store(4, clauseRest))),
-	Build:=BuildClauseList));
+          Parse.Store(1, gramExpIde),
+          NEW(Parse.GivenKeyword, key:=keyDefSyn),
+          Parse.Store(2, clauseExtends),
+          Parse.Store(3, gramExp),
+          Parse.Store(4, clauseRest))),
+        Build:=BuildClauseList));
 
 (* clauseRest ::=
-	{ clauseSeq [] }
+        { clauseSeq [] }
 *)
     env.Add(clauseRest.name,
-      NEW(Parse.Choice,	choice:=Parse.List(
-	clauseSeq,
-	NEW(Parse.Sequence, items:=NIL))));
+      NEW(Parse.Choice,        choice:=Parse.List(
+        clauseSeq,
+        NEW(Parse.Sequence, items:=NIL))));
 
 (* clauseExtends ::=
-	{ [ "." "." "." { [ "*" { [ "_" int ] [] } ] [] } [] }
+        { [ "." "." "." { [ "*" { [ "_" int ] [] } ] [] } [] }
 *)
     env.Add(clauseExtends.name,
       NEW(Parse.Choice, choice:=Parse.List(
-	NEW(Parse.Action, grammar:=
-	  NEW(Parse.Sequence, items:=Parse.List(
-	    NEW(Parse.GivenDelimiter, delim:='.'),
-	    NEW(Parse.GivenDelimiter, delim:='.'),
-	    NEW(Parse.GivenDelimiter, delim:='.'),
-	    Parse.Store(1,
-	      NEW(Parse.Choice, choice:=Parse.List(
-	        NEW(Parse.Action, grammar:=
-		  NEW(Parse.Sequence, items:=Parse.List(
-		    NEW(Parse.GivenKeyword, key:=keyStar),
-		    Parse.Store(2,
-		      NEW(Parse.Choice, choice:=Parse.List(
-		        NEW(Parse.Action, grammar:=
-			  NEW(Parse.Sequence, items:=Parse.List(
-			    NEW(Parse.GivenDelimiter, delim:='_'),
-			    Parse.Store(3, 
-			      NEW(Parse.Integer, Build:=BuildInteger)))),
-			  Build:=BuildClauseExtendsIterPos),
-		        NEW(Parse.Action, grammar:=
-			  NEW(Parse.Sequence, items:=NIL),
-			  Build:=BuildClauseExtendsIterNoPos)))))),
-		  Build:=BuildClauseExtendsIter),
-	        NEW(Parse.Action, grammar:=
-		  NEW(Parse.Sequence, items:=NIL),
-		  Build:=BuildClauseExtendsChoice)))))),
-	  Build:=BuildClauseExtendsYes),
-	NEW(Parse.Action,
-	  grammar := NEW(Parse.Sequence, items:=NIL),
-	  Build:=BuildClauseExtendsNo))));
+        NEW(Parse.Action, grammar:=
+          NEW(Parse.Sequence, items:=Parse.List(
+            NEW(Parse.GivenDelimiter, delim:='.'),
+            NEW(Parse.GivenDelimiter, delim:='.'),
+            NEW(Parse.GivenDelimiter, delim:='.'),
+            Parse.Store(1,
+              NEW(Parse.Choice, choice:=Parse.List(
+                NEW(Parse.Action, grammar:=
+                  NEW(Parse.Sequence, items:=Parse.List(
+                    NEW(Parse.GivenKeyword, key:=keyStar),
+                    Parse.Store(2,
+                      NEW(Parse.Choice, choice:=Parse.List(
+                        NEW(Parse.Action, grammar:=
+                          NEW(Parse.Sequence, items:=Parse.List(
+                            NEW(Parse.GivenDelimiter, delim:='_'),
+                            Parse.Store(3, 
+                              NEW(Parse.Integer, Build:=BuildInteger)))),
+                          Build:=BuildClauseExtendsIterPos),
+                        NEW(Parse.Action, grammar:=
+                          NEW(Parse.Sequence, items:=NIL),
+                          Build:=BuildClauseExtendsIterNoPos)))))),
+                  Build:=BuildClauseExtendsIter),
+                NEW(Parse.Action, grammar:=
+                  NEW(Parse.Sequence, items:=NIL),
+                  Build:=BuildClauseExtendsChoice)))))),
+          Build:=BuildClauseExtendsYes),
+        NEW(Parse.Action,
+          grammar := NEW(Parse.Sequence, items:=NIL),
+          Build:=BuildClauseExtendsNo))));
 
 (* gramExpIde ::=
-	ide
+        ide
 *)
     env.Add(gramExpIde.name,
       NEW(Parse.Identifier, 
         Build:=BuildIde));
 
 (* gramExp ::=
-	[ gramExpBase 
-	  { [ "=>" actionTermExp ] 
-	    [ ":> actionTypeExp ]
-	    [ "_" int ]
-	    [] } ]
+        [ gramExpBase 
+          { [ "=>" actionTermExp ] 
+            [ ":> actionTypeExp ]
+            [ "_" int ]
+            [] } ]
 *)
     env.Add(gramExp.name,
       NEW(Parse.Action, grammar:=
         NEW(Parse.Sequence, items:=Parse.List(
-	  Parse.Store(1, gramExpBase),
+          Parse.Store(1, gramExpBase),
           Parse.Store(2,
-	    NEW(Parse.Choice, choice :=Parse.List(
-	      NEW(Parse.Action, grammar:=
-	        NEW(Parse.Sequence, items:=Parse.List(
-	          NEW(Parse.GivenKeyword, key:=keyTermSem),
-	          Parse.Store(3, actionTermExp))),
-	        Build:=BuildTermAction),
-	      NEW(Parse.Action, grammar:=
-	        NEW(Parse.Sequence, items:=Parse.List(
-	          NEW(Parse.GivenKeyword, key:=keyTypeSem),
-	          Parse.Store(3, actionTypeExp))),
-	        Build:=BuildTypeAction),
-      	      NEW(Parse.Action, grammar:=
-		NEW(Parse.Sequence, items:=Parse.List(
-	 	  NEW(Parse.GivenDelimiter, delim:='_'),
-		  Parse.Store(3, NEW(Parse.Integer, Build:=BuildInteger)))),
-		Build:=BuildStorage),
-	      NEW(Parse.Action, grammar:=
-	        NEW(Parse.Sequence, items:=NIL),
-		Build:=BuildSingle)))))),
-	Build:=BuildGramExp));
+            NEW(Parse.Choice, choice :=Parse.List(
+              NEW(Parse.Action, grammar:=
+                NEW(Parse.Sequence, items:=Parse.List(
+                  NEW(Parse.GivenKeyword, key:=keyTermSem),
+                  Parse.Store(3, actionTermExp))),
+                Build:=BuildTermAction),
+              NEW(Parse.Action, grammar:=
+                NEW(Parse.Sequence, items:=Parse.List(
+                  NEW(Parse.GivenKeyword, key:=keyTypeSem),
+                  Parse.Store(3, actionTypeExp))),
+                Build:=BuildTypeAction),
+                    NEW(Parse.Action, grammar:=
+                NEW(Parse.Sequence, items:=Parse.List(
+                   NEW(Parse.GivenDelimiter, delim:='_'),
+                  Parse.Store(3, NEW(Parse.Integer, Build:=BuildInteger)))),
+                Build:=BuildStorage),
+              NEW(Parse.Action, grammar:=
+                NEW(Parse.Sequence, items:=NIL),
+                Build:=BuildSingle)))))),
+        Build:=BuildGramExp));
 
 (* gramExpBase ::=
-	{ ide string "ide" "int" "real" "char" "string"
-	  gramExpSequence gramExpChoice gramExpParens }
+        { ide string "ide" "int" "real" "char" "string"
+          gramExpSequence gramExpChoice gramExpParens }
 *)
     env.Add(gramExpBase.name,
       NEW(Parse.Choice, choice:=
-	Parse.List(
-	  NEW(Parse.Identifier, Build:=BuildGramIde),
-	  NEW(Parse.QuotedString, Build:=BuildGramString),
-	  NEW(Parse.GivenKeyword, key:=keyIde, Build:=BuildGramKeyIde),
-	  NEW(Parse.GivenKeyword, key:=keyInt, Build:=BuildGramKeyInt),
-	  NEW(Parse.GivenKeyword, key:=keyReal, Build:=BuildGramKeyReal),
-	  NEW(Parse.GivenKeyword, key:=keyChar, Build:=BuildGramKeyChar),
-	  NEW(Parse.GivenKeyword, key:=keyString, Build:=BuildGramKeyString),
-	  gramExpSequence,
-	  gramExpChoice,
-	  gramExpParens)));
+        Parse.List(
+          NEW(Parse.Identifier, Build:=BuildGramIde),
+          NEW(Parse.QuotedString, Build:=BuildGramString),
+          NEW(Parse.GivenKeyword, key:=keyIde, Build:=BuildGramKeyIde),
+          NEW(Parse.GivenKeyword, key:=keyInt, Build:=BuildGramKeyInt),
+          NEW(Parse.GivenKeyword, key:=keyReal, Build:=BuildGramKeyReal),
+          NEW(Parse.GivenKeyword, key:=keyChar, Build:=BuildGramKeyChar),
+          NEW(Parse.GivenKeyword, key:=keyString, Build:=BuildGramKeyString),
+          gramExpSequence,
+          gramExpChoice,
+          gramExpParens)));
 
 (* gramExpSequence ::=
-	[ "[" gramExpList "]" ]
+        [ "[" gramExpList "]" ]
 *)
     env.Add(gramExpSequence.name,
       NEW(Parse.Action, grammar:=
         NEW(Parse.Sequence, items:=Parse.List(
-	  NEW(Parse.GivenDelimiter, delim:='['),
-	  Parse.Store(1, gramExpList),
-	  NEW(Parse.GivenDelimiter, delim:=']'))),
-	Build:=BuildGramExpSequence));
+          NEW(Parse.GivenDelimiter, delim:='['),
+          Parse.Store(1, gramExpList),
+          NEW(Parse.GivenDelimiter, delim:=']'))),
+        Build:=BuildGramExpSequence));
 
 (* gramExpChoice ::=
-	[ "{" gramExpList "}" ]
+        [ "{" gramExpList "}" ]
 *)
     env.Add(gramExpChoice.name,
       NEW(Parse.Action, grammar:=
         NEW(Parse.Sequence, items:=
-	  Parse.List(
-	    NEW(Parse.GivenDelimiter, delim:='{'),
-	    Parse.Store(1, gramExpList),
-	    NEW(Parse.GivenDelimiter, delim:='}'))),
-	Build:=BuildGramExpChoice));
+          Parse.List(
+            NEW(Parse.GivenDelimiter, delim:='{'),
+            Parse.Store(1, gramExpList),
+            NEW(Parse.GivenDelimiter, delim:='}'))),
+        Build:=BuildGramExpChoice));
 
 (* gramExpParens ::=
-	[ "(" gramExp
-	  { [ "*" { [ "_" int gramExp ] gramExp } ] [] } 
-	  ")" ]
+        [ "(" gramExp
+          { [ "*" { [ "_" int gramExp ] gramExp } ] [] } 
+          ")" ]
 *)
     env.Add(gramExpParens.name,
       NEW(Parse.Action, grammar:=
         NEW(Parse.Sequence, items:=Parse.List(
-	  NEW(Parse.GivenDelimiter, delim:='('),
-	  Parse.Store(1, gramExp),
-	  Parse.Store(6,
-      	    NEW(Parse.Choice, choice :=Parse.List(
+          NEW(Parse.GivenDelimiter, delim:='('),
+          Parse.Store(1, gramExp),
+          Parse.Store(6,
+                  NEW(Parse.Choice, choice :=Parse.List(
               NEW(Parse.Action, grammar:=
-	        NEW(Parse.Sequence, items:=Parse.List(
-	          NEW(Parse.GivenKeyword, key:=keyStar),
-		  Parse.Store(5,
-		    NEW(Parse.Choice, choice:=Parse.List(
-		      NEW(Parse.Action, grammar:=
-		        NEW(Parse.Sequence, items:=Parse.List(
-			  NEW(Parse.GivenDelimiter, delim:='_'),
-			  Parse.Store(4, 
-			    NEW(Parse.Integer, Build:=BuildInteger)),
-			  Parse.Store(3, gramExp))),
-		        Build:= BuildGramExpIterPos),
-		      NEW(Parse.Action, grammar:=
-		        Parse.Store(3, gramExp),
-		        Build:= BuildGramExpIterNoPos)))))),
-		Build:=BuildGramExpIter),
-	      NEW(Parse.Action, 
-		grammar:=NEW(Parse.Sequence, items:=NIL),
-		Build:=BuildGramExpBase)))),
-  	  NEW(Parse.GivenDelimiter, delim:=')'))),
-	Build:=BuildGramExpParens));
+                NEW(Parse.Sequence, items:=Parse.List(
+                  NEW(Parse.GivenKeyword, key:=keyStar),
+                  Parse.Store(5,
+                    NEW(Parse.Choice, choice:=Parse.List(
+                      NEW(Parse.Action, grammar:=
+                        NEW(Parse.Sequence, items:=Parse.List(
+                          NEW(Parse.GivenDelimiter, delim:='_'),
+                          Parse.Store(4, 
+                            NEW(Parse.Integer, Build:=BuildInteger)),
+                          Parse.Store(3, gramExp))),
+                        Build:= BuildGramExpIterPos),
+                      NEW(Parse.Action, grammar:=
+                        Parse.Store(3, gramExp),
+                        Build:= BuildGramExpIterNoPos)))))),
+                Build:=BuildGramExpIter),
+              NEW(Parse.Action, 
+                grammar:=NEW(Parse.Sequence, items:=NIL),
+                Build:=BuildGramExpBase)))),
+            NEW(Parse.GivenDelimiter, delim:=')'))),
+        Build:=BuildGramExpParens));
 
 (* gramExpList ::=
-	{ [ gramExp gramExpList ] [] }
+        { [ gramExp gramExpList ] [] }
 *)
     env.Add(gramExpList.name,
       NEW(Parse.Choice, choice :=
-	Parse.List(
-	  NEW(Parse.Action, grammar:=
-	    NEW(Parse.Sequence, items:=
-	      Parse.List(
-	        Parse.Store(1, gramExp),
-		Parse.Store(2, gramExpList))),
-	    Build:=BuildGramList),
-	  NEW(Parse.Sequence, items:=NIL))));
+        Parse.List(
+          NEW(Parse.Action, grammar:=
+            NEW(Parse.Sequence, items:=
+              Parse.List(
+                Parse.Store(1, gramExp),
+                Parse.Store(2, gramExpList))),
+            Build:=BuildGramList),
+          NEW(Parse.Sequence, items:=NIL))));
 
   END InitGrammars;
 
